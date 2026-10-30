@@ -1,0 +1,71 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sol bots</title>
+<style>
+body{margin:0;background:#111214;color:#d8d9dc;font:14px/1.45 -apple-system,system-ui,sans-serif}
+.w{max-width:1100px;margin:0 auto;padding:14px}
+h1{font-size:13px;font-weight:500;color:#8b8d93;margin:0}
+.big{font-size:32px;font-weight:600;color:#fff;margin:2px 0}
+.mut{color:#8b8d93;font-size:12px}
+h2{font-size:13px;font-weight:600;color:#a9abb0;text-transform:uppercase;letter-spacing:.05em;margin:26px 0 8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.c{background:#1a1b1e;border:1px solid #26272b;border-radius:8px;padding:12px}
+.c .t{font-weight:600;color:#fff}.c .v{font-size:22px;color:#fff;font-weight:600}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px;font-size:13px;margin-top:6px}
+.kv span:nth-child(odd){color:#8b8d93}
+.g{color:#3fb950}.r{color:#f85149}
+svg{width:100%;height:90px;display:block;margin-top:8px}
+.tb{overflow-x:auto;background:#1a1b1e;border:1px solid #26272b;border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:12.5px;white-space:nowrap}
+th,td{padding:6px 8px;text-align:right;border-bottom:1px solid #232428}th{color:#8b8d93;font-weight:500;position:sticky;top:0;background:#1a1b1e}
+td:first-child,th:first-child,.l{text-align:left}
+a{color:#9aa4b2}
+select{background:#1a1b1e;color:#d8d9dc;border:1px solid #333;border-radius:6px;padding:4px 8px}
+#dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#666;margin-right:6px}
+ul{margin:4px 0;padding-left:18px;font-size:12.5px}li{margin:3px 0}
+</style></head><body><div class="w">
+<h1>Total equity across bots</h1>
+<div class="big" id="tot">-</div>
+<div class="mut"><span id="dot"></span><span id="upd">connecting</span></div>
+<div class="cards" id="cards" style="margin-top:14px"></div>
+<h2>Open positions</h2><div class="tb"><table id="open"></table></div>
+<h2>Trades</h2><div style="margin-bottom:8px"><select id="flt"><option value="">All bots</option><option>Main</option><option>LearnBot</option><option>Scalper</option></select> <span class="mut" id="tc"></span></div>
+<div class="tb" style="max-height:520px"><table id="trades"></table></div>
+<h2>LearnBot learning</h2><div class="c" id="learn"></div>
+<h2>Main bot filters and settings</h2><div class="cards"><div class="c" id="filt"></div><div class="c" id="sett"></div></div>
+<h2>Scalper variants</h2><div class="tb"><table id="var"></table></div>
+<p class="mut" style="margin-top:24px">Read-only. Positions priced live from DexScreener; times Europe/Warsaw.</p>
+</div><script>
+let D=null,last=0;
+const f=(x,d=4)=>x==null?'-':(+x).toFixed(d), pc=x=>x==null?'':x>0?'g':x<0?'r':'';
+const sg=(x,d=4)=>x==null?'-':(x>0?'+':'')+(+x).toFixed(d);
+const px=x=>x==null?'-':x<0.001?(+x).toPrecision(4):(+x).toPrecision(5);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hm=m=>m==null?'-':m<60?m.toFixed(1)+'m':(m/60).toFixed(1)+'h';
+function chart(c,base){if(!c||c.length<2)return'<svg></svg>';const xs=c.map(p=>p[0]),ys=c.map(p=>p[1]);
+let x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys,base),y1=Math.max(...ys,base);if(y1==y0){y1+=1e-6;y0-=1e-6}
+const X=x=>(x-x0)/(x1-x0||1)*300,Y=y=>86-(y-y0)/(y1-y0)*82;
+const pts=c.map(p=>X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1)).join(' ');const col=ys[ys.length-1]>=base?'#3fb950':'#f85149';
+return`<svg viewBox="0 0 300 90" preserveAspectRatio="none"><line x1="0" x2="300" y1="${Y(base)}" y2="${Y(base)}" stroke="#333" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/><polyline fill="none" stroke="${col}" stroke-width="1.6" points="${pts}" vector-effect="non-scaling-stroke"/></svg><div class="mut" style="display:flex;justify-content:space-between"><span>${new Date(x0*1000).toLocaleTimeString('pl-PL',{timeZone:'Europe/Warsaw',hour:'2-digit',minute:'2-digit'})}</span><span>${f(y0,4)} - ${f(y1,4)}</span><span>now</span></div>`}
+function render(){const d=D;
+document.getElementById('tot').textContent=f(d.totalSol,4)+' SOL  ·  $'+f(d.totalUsd,2);
+document.getElementById('cards').innerHTML=d.bots.map(b=>`<div class="c"><div class="t">${b.name}</div><div class="v">${f(b.equity,4)} SOL</div>
+<div class="${pc(b.pnl)}">${sg(b.pnl,4)} SOL · ${sg(b.pnlUsd,2)} USD${b.pct!=null?' · '+sg(b.pct,2)+'%':''}</div>
+<div class="kv"><span>Win rate</span><span>${b.winRate==null?'-':b.winRate+'%'} (${b.wins}/${b.closed})</span><span>Trade rows</span><span>${b.trades}</span><span>Open positions</span><span>${b.openN}</span>
+${b.walletSol!=null?`<span>Wallet SOL</span><span>${f(b.walletSol,4)}</span><span>Positions value</span><span>${f(b.posValue,4)}</span>`:''}<span>Start</span><span>${b.start} SOL</span></div>${chart(b.curve,b.start)}</div>`).join('');
+document.getElementById('open').innerHTML='<tr><th>Token</th><th>Bot</th><th>Entry $</th><th>Now $</th><th>Size SOL</th><th>P&L %</th><th>P&L SOL</th><th>Hold</th><th class="l">Links</th></tr>'+
+(d.open.map(o=>`<tr><td>${esc(o.tok)}</td><td>${esc(o.bot)}</td><td>${px(o.entry)}</td><td>${px(o.cur)}</td><td>${f(o.size,4)}</td><td class="${pc(o.pct)}">${o.pct==null?'-':sg(o.pct,2)+'%'}</td><td class="${pc(o.upnl)}">${sg(o.upnl,5)}</td><td>${hm(o.hold)}</td><td class="l"><a href="https://dexscreener.com/solana/${o.mint}" target="_blank">Dex</a> <a href="https://solscan.io/token/${o.mint}" target="_blank">Solscan</a></td></tr>`).join('')||'<tr><td colspan="9" class="mut">none</td></tr>');
+const fv=document.getElementById('flt').value,T=d.trades.filter(t=>!fv||t.bot==fv);document.getElementById('tc').textContent=T.length+' rows';
+document.getElementById('trades').innerHTML='<tr><th>Time</th><th>Bot</th><th class="l">Side</th><th class="l">Token</th><th>Size</th><th>Entry $</th><th>Exit $</th><th>P&L %</th><th>P&L SOL</th><th>Hold</th><th class="l">Reason</th><th class="l">Tx</th></tr>'+
+T.map(t=>`<tr><td>${t.t}</td><td>${t.bot}${t.var?' '+esc(t.var):''}</td><td class="l">${t.side}</td><td class="l"><a href="https://dexscreener.com/solana/${t.mint}" target="_blank">${esc(t.tok)}</a></td><td>${f(t.size,4)}</td><td>${px(t.entry)}</td><td>${px(t.exit)}</td><td class="${pc(t.pct)}">${t.pct==null?'-':sg(t.pct,2)+'%'}</td><td class="${pc(t.sol)}">${sg(t.sol,5)}</td><td>${hm(t.hold)}</td><td class="l mut">${esc(t.reason)}</td><td class="l">${t.tx?`<a href="https://solscan.io/tx/${t.tx}" target="_blank">tx</a>`:''}</td></tr>`).join('');
+const L=d.learn;document.getElementById('learn').innerHTML=`<div class="kv"><span>Exploration (eps)</span><span>${L.exploration??'-'}</span><span>Avg reward</span><span class="${pc(L.avgReward)}">${L.avgReward??'-'}</span><span>Episodes / wins</span><span>${L.episodes} / ${L.wins}</span><span>Steps</span><span>${L.steps}</span></div>
+<div class="mut" style="margin-top:8px">Best rules</div><ul>${L.best.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul><div class="mut">Worst rules</div><ul>${L.worst.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul><div class="mut">Exit rules</div><ul>${L.exitRules.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul>`;
+const F=d.main.filters,tot=Object.values(F).reduce((a,b)=>a+b,0)||1;
+document.getElementById('filt').innerHTML='<div class="t">Rejections (current run)</div><div class="kv">'+Object.entries(F).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${esc(k)}</span><span>${v} (${(v/tot*100).toFixed(0)}%)</span>`).join('')+`</div><div class="mut" style="margin-top:6px">last log ${esc(d.main.lastLog)}</div>`;
+document.getElementById('sett').innerHTML='<div class="t">Settings</div><div class="kv">'+Object.entries(d.main.settings).map(([k,v])=>`<span>${k}</span><span>${v}</span>`).join('')+`</div><div class="mut" style="margin-top:6px"><a href="https://solscan.io/account/${d.main.wallet}" target="_blank">wallet on Solscan</a></div>`;
+document.getElementById('var').innerHTML='<tr><th>Variant</th><th>Closed</th><th>Wins</th><th>Win %</th><th>Net SOL</th><th>Open</th></tr>'+d.scalp.variants.map(v=>`<tr><td>${esc(v.name)}</td><td>${v.trades}</td><td>${v.wins}</td><td>${v.trades?(v.wins/v.trades*100).toFixed(0)+'%':'-'}</td><td class="${pc(v.net)}">${sg(v.net,5)}</td><td>${v.open}</td></tr>`).join('');}
+const TOPIC=location.hash.slice(1);let lastId="";
+async function poll(){try{const r=await fetch('https://ntfy.sh/'+TOPIC+'/json?poll=1&since=latest',{cache:'no-store'});const tx=(await r.text()).trim().split('\n').filter(Boolean);
+if(tx.length){const m=JSON.parse(tx[tx.length-1]);if(m.id!==lastId&&m.attachment){const b=await fetch(m.attachment.url,{cache:'no-store'});const ds=b.body.pipeThrough(new DecompressionStream('gzip'));
+D=JSON.parse(await new Response(ds).text());lastId=m.id;last=D.serverTime;render()}}}catch(e){console.log(e)}setTimeout(poll,3000)}
+setInterval(()=>{if(!last)return;const s=Math.max(0,Math.round(Date.now()/1000-last));document.getElementById('upd').textContent='updated '+s+'s ago · SOL $'+f(D.solUsd,2);document.getElementById('dot').style.background=s<10?'#3fb950':'#f85149'},500);
+document.getElementById('flt').onchange=()=>D&&render();poll();
+</script></body></html>
