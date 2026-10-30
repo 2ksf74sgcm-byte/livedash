@@ -46,7 +46,7 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px;margin-top:8px}
 <h2>Trades</h2><div class="seg" id="flt"></div>
 <div class="tb" style="max-height:70vh"><table id="trades"></table></div>
 <h2>LearnBot learning</h2><div class="sec paper" id="learn"></div>
-<h2>Live bot filters and settings</h2><div class="grid"><div class="sec" id="filt"></div><div class="sec" id="sett"></div></div>
+<h2>Live bot filters and settings</h2><div class="grid"><div class="sec" id="filt"></div><div class="sec" id="sett"></div><div class="sec" id="lrn"></div></div>
 <h2>Scalper variants</h2><div class="tb"><table id="var"></table></div>
 <p class="mut" style="margin-top:24px"><a href="#" id="out">Lock</a> &nbsp; Encrypted. Prices from DexScreener, sampled about every 3 s, last 2 h. Times Europe/Warsaw. Gold border = real money.</p>
 </div><script>
@@ -75,13 +75,13 @@ const L=B[1],S=B[2];
 $('paper').innerHTML=`<div class="sec paper"><span class="tag">PAPER, NOT REAL</span> <span class="mut">simulated, no money at risk</span>
 <div class="big" style="color:#b5b8bf">${f(P.equity,4)} SOL</div><div class="pn ${pc(P.pnl)}">${sg(P.pnl,4)} SOL simulated</div>
 ${chart(P.curve,P.start,80)}
-<div class="sub"><div class="t">LearnBot</div><div class="kv"><span>Equity</span><span>${f(L.equity,4)} SOL</span><span>P&amp;L vs ${L.start}</span><span class="${pc(L.pnl)}">${sg(L.pnl,4)} (${sg(L.pct,1)}%)</span><span>Win rate</span><span>${L.winRate==null?'-':L.winRate+'%'} (${L.wins}/${L.closed})</span><span>Open</span><span>${L.openN}</span></div>${chart(L.curve,L.start,60)}</div>
-<div class="sub"><div class="t">Scalper</div><div class="kv"><span>Net P&amp;L</span><span class="${pc(S.pnl)}">${sg(S.pnl,4)} SOL</span><span>Win rate</span><span>${S.winRate==null?'-':S.winRate+'%'} (${S.wins}/${S.closed})</span><span>Open</span><span>${S.openN}</span></div>${chart(S.curve,0,60)}</div></div>`;
+<div class="sub"><div class="t">LearnBot</div><div class="kv"><span>Equity</span><span>${f(L.equity,4)} SOL</span><span>Cash</span><span>${f(P.learnCash,4)} SOL</span><span>P&amp;L vs ${L.start}</span><span class="${pc(L.pnl)}">${sg(L.pnl,4)} (${sg(L.pct,1)}%)</span><span>Win rate</span><span>${L.winRate==null?'-':L.winRate+'%'} (${L.wins}/${L.closed})</span><span>Open</span><span>${L.openN}</span></div>${chart(L.curve,L.start,60)}</div>
+<div class="sub"><div class="t">Scalper</div><div class="kv"><span>Equity</span><span>${f(S.equity,4)} SOL</span><span>Cash</span><span>${f(S.cash,4)} SOL</span><span>P&amp;L vs ${f(S.start,2)}</span><span class="${pc(S.pnl)}">${sg(S.pnl,4)} (${sg(S.pct,1)}%)</span><span>Per trade / max open</span><span>${S.size} SOL / ${S.maxOpen}</span><span>Win rate</span><span>${S.winRate==null?'-':S.winRate+'%'} (${S.wins}/${S.closed})</span><span>Open</span><span>${S.openN}</span></div>${chart(S.curve,S.start,60)}</div></div>`;
 $('coins').innerHTML=d.open.map(o=>{const ph=o.ph||[];const c=ph.slice();if(o.cur&&c.length&&c[c.length-1][0]<d.serverTime-5)c.push([d.serverTime,o.cur]);
 return`<div class="coin${o.live?' live':''}"><div class="ch"><b>${esc(o.tok)}</b><span class="mut">${o.live?'<b style="color:var(--real)">REAL</b> ':'paper '}${esc(o.bot)}</span></div>
 <div class="ch"><span class="pn ${pc(o.pct)}">${o.pct==null?'-':sg(o.pct,1)+'%'}</span><span class="${pc(o.upnl)}">${o.upnl==null?'':sg(o.upnl,4)+' SOL'}</span></div>
 <div class="kv"><span>Entry${o.entryApprox?' (approx)':''}</span><span>$${px(o.entry)}</span><span>Now</span><span>$${px(o.cur)}</span><span>Size / held</span><span>${f(o.size,4)} SOL / ${hm(o.hold)}</span></div>
-${chart(c,o.entry,90,px)}<div class="mut" style="margin-top:6px">dashed line = entry &nbsp; <a href="https://dexscreener.com/solana/${o.mint}" target="_blank">DexScreener</a> &nbsp; <a href="https://solscan.io/token/${o.mint}" target="_blank">Solscan</a></div>${o.bot.startsWith('Scalper')?'':`<div class="seg" style="margin-top:8px"><button data-close="${o.bot}|${o.mint}|${esc(o.tok)}|${o.live?1:0}">Close</button></div>`}</div>`}).join('')||'<div class="mut">No coins held right now</div>';
+${chart(c,o.entry,90,px)}<div class="mut" style="margin-top:6px">dashed line = entry &nbsp; <a href="https://dexscreener.com/solana/${o.mint}" target="_blank">DexScreener</a> &nbsp; <a href="https://solscan.io/token/${o.mint}" target="_blank">Solscan</a></div><div class="seg" style="margin-top:8px"><button data-close="${o.bot}|${o.mint}|${esc(o.tok)}|${o.live?1:0}">Close</button></div></div>`}).join('')||'<div class="mut">No coins held right now</div>';
 $('flt').innerHTML=[['','All'],['Main','Real'],['LearnBot','LearnBot'],['Scalper','Scalper']].map(([v,n])=>`<button data-v="${v}" class="${FV==v?'on':''}">${n}</button>`).join('')+`<span class="mut" id="tc"></span>`;
 const T=d.trades.filter(t=>!FV||t.bot==FV);$('tc').textContent=T.length+' trades';
 $('trades').innerHTML='<tr><th>Time</th><th class="l">Bot</th><th class="l">Token</th><th class="l">Side</th><th>P&amp;L %</th><th>P&amp;L SOL</th><th>Size</th><th>Entry $</th><th>Exit $</th><th>Hold</th><th class="l">Reason</th><th class="l">Tx</th></tr>'+
@@ -90,6 +90,7 @@ const Ln=d.learn;$('learn').innerHTML=`<div class="kv"><span>Exploration</span><
 <details><summary>Rules learned</summary><div class="mut" style="margin-top:8px">Best</div><ul>${Ln.best.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul><div class="mut">Worst</div><ul>${Ln.worst.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul><div class="mut">Exit</div><ul>${Ln.exitRules.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></details>`;
 const F=d.main.filters,tot=Object.values(F).reduce((a,b)=>a+b,0)||1;
 $('filt').innerHTML='<b>Rejections (current run)</b><div class="kv">'+Object.entries(F).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${esc(k)}</span><span>${v} (${(v/tot*100).toFixed(0)}%)</span>`).join('')+`</div><div class="mut" style="margin-top:6px">last log ${esc(d.main.lastLog)}</div>`;
+const LJ=d.main.learned||{},E=LJ.effective||{},BS=LJ.base||{};$('lrn').innerHTML='<b>Learned thresholds (main bot)</b><div class="kv">'+Object.entries(E).map(([k,v])=>`<span>${esc(k)}</span><span>${esc(v)}${BS[k]!=null&&BS[k]!=v?' (base '+esc(BS[k])+')':''}</span>`).join('')+`<span>Blocked rug flags</span><span>${esc((LJ.badFlags||[]).join(', ')||'none')}</span><span>Closed trades learned from</span><span>${LJ.samples??0}</span><span>Stopped-out mints blocked 24h</span><span>${LJ.stoppedBlocked??0}</span></div>`;
 $('sett').innerHTML='<b>Settings</b><div class="kv">'+Object.entries(d.main.settings).map(([k,v])=>`<span>${esc(k)}</span><span>${esc(v)}</span>`).join('')+`</div><div class="mut" style="margin-top:6px"><a href="https://solscan.io/account/${d.main.wallet}" target="_blank">Wallet on Solscan</a></div>`;
 $('var').innerHTML='<tr><th>Variant</th><th>Closed</th><th>Wins</th><th>Win %</th><th>Net SOL</th><th>Open</th></tr>'+d.scalp.variants.map(v=>`<tr><td>${esc(v.name)}</td><td>${v.trades}</td><td>${v.wins}</td><td>${v.trades?(v.wins/v.trades*100).toFixed(0)+'%':'-'}</td><td class="${pc(v.net)}">${sg(v.net,5)}</td><td>${v.open}</td></tr>`).join('');}
 $('flt').onclick=e=>{if(e.target.dataset.v!=null){FV=e.target.dataset.v;D&&render()}};
@@ -120,9 +121,12 @@ const all=new Uint8Array(12+ct.length);all.set(iv);all.set(ct,12);RES.unshift({o
 await fetch('https://ntfy.sh/'+CTOPIC,{method:'POST',body:b64(all)})}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-close]');if(!b)return;const [bot,mint,tok,live]=b.dataset.close.split('|');
 if(confirm((live==='1'?'REAL MONEY: sell ':'Paper: close ')+tok+' on '+bot+'?'))cmd('close',{bot,mint})});
-function ctrl(){$('ctl').innerHTML=`<div class="seg"><button onclick="cmd('ping',{})">Ping box</button>
-${['Main','LearnBot'].map(b=>`<button onclick="confirm('Pause ${b}?')&&cmd('pause',{bot:'${b}'})">Pause ${b}</button><button onclick="cmd('resume',{bot:'${b}'})">Resume ${b}</button>`).join('')}</div>
-<div class="mut">Move paper balance: pending. Move real SOL: no live bots yet.</div><div id="res" style="margin-top:8px;font-size:13px"></div>`;showRes()}
+function ctrl(){$('ctl').innerHTML=`<div class="seg"><button onclick="cmd('ping',{})">Ping box</button></div>
+<div class="seg">${['Main','LearnBot','Scalper'].map(b=>`<button onclick="confirm('Pause ${b}?')&&cmd('pause',{bot:'${b}'})">Pause ${b}</button><button onclick="cmd('resume',{bot:'${b}'})">Resume ${b}</button>`).join('')}</div>
+<div class="mut">Move paper SOL</div><div class="seg"><select id="xf" style="background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:6px"><option value="LearnBot|Scalper">LearnBot to Scalper</option><option value="Scalper|LearnBot">Scalper to LearnBot</option></select>
+<input id="xa" type="number" step="0.01" min="0" placeholder="SOL" style="width:90px;background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:6px"><button onclick="xfer()">Move</button></div>
+<div class="mut">Move real SOL: no live bots yet</div><div id="res" style="margin-top:8px;font-size:13px"></div>`;showRes()}
+function xfer(){const [from,to]=$('xf').value.split('|'),amount=+$('xa').value;if(!(amount>0))return;if(confirm('Move '+amount+' paper SOL from '+from+' to '+to+'?'))cmd('transfer_paper',{from,to,amount})}
 async function login(k){KEY=k;try{await start();$('lg').style.display='none';$('app').style.display='';ctrl();return true}catch(e){console.log(e);KEY=null;return false}}
 $('go').onclick=async()=>{$('msg').textContent='Checking...';const k=await derive($('pw').value);
 if(await login(k)){const raw=b64(await crypto.subtle.exportKey('raw',k));(($('rem').checked)?localStorage:sessionStorage).setItem('dk',raw);$('pw').value=''}else $('msg').textContent='Wrong password'};
