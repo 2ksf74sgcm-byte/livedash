@@ -45,13 +45,21 @@ input,select{background:var(--card2);color:var(--txt);border:1px solid var(--lin
 .fu{animation:fu 1s}.fd{animation:fd 1s}@keyframes fu{0%{background:rgba(52,211,153,.28)}100%{background:transparent}}@keyframes fd{0%{background:rgba(248,113,113,.28)}100%{background:transparent}}
 .n{border-radius:4px;transition:color .3s}
 @media(max-width:600px){.big{font-size:28px}th,td{padding:8px}.hv{gap:12px}.hv b{font-size:14.5px}}
+.mbh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+.pill{font-size:11px;font-weight:600;letter-spacing:.06em;padding:2px 9px;border-radius:999px;background:#26282e;color:#c3c6cc;text-transform:uppercase}
+.pill.on{background:rgba(52,211,153,.14);color:var(--g)}.pill.off{background:rgba(248,113,113,.14);color:var(--r)}.pill.ac{background:rgba(165,180,252,.14);color:var(--acc)}
+.bar{height:8px;border-radius:999px;background:var(--card2);border:1px solid var(--line);overflow:hidden;margin-top:6px}.bar>i{display:block;height:100%;background:var(--acc);border-radius:999px;transition:width .6s}
+.mbg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:10px}
+.feed{font-size:12.5px;max-height:300px;overflow:auto}.feed div{display:grid;grid-template-columns:64px 70px 1fr;gap:8px;padding:4px 0;border-bottom:1px solid var(--line)}.feed div:last-child{border-bottom:0}
+.feed .k{color:var(--mut);text-transform:uppercase;font-size:10.5px;letter-spacing:.08em;padding-top:2px}
 </style></head><body>
 <div class="w" id="lg" style="max-width:360px;padding-top:90px"><div style="font-size:22px;font-weight:700;margin-bottom:14px">Sol bots</div><input id="pw" type="password" placeholder="Password" autocomplete="current-password" style="width:100%;padding:12px;font-size:16px"><label class="mut" style="display:block;margin:12px 0"><input type="checkbox" id="rem"> Remember on this device</label><button id="go" class="on" style="width:100%;padding:11px">Unlock</button><div id="msg" class="r" style="margin-top:10px"></div></div>
 <div class="w" id="app" style="display:none">
 <header><div class="hd"><div class="hv"><div><small>Real</small><b id="hR">-</b></div><div><small>Paper</small><b id="hP">-</b></div><div><small>SOL</small><b id="hS">-</b></div></div><div class="st"><span id="dot"></span><span id="upd">connecting</span></div></div></header>
 <div class="grid"><div id="real"></div><div id="paper"></div></div>
+<h2>MemeBot (paper)</h2><div class="card paper" id="mb"><div class="mut">Loading...</div></div>
 <h2>Records</h2><div class="seg" id="sbot"></div><div class="card" id="stats"></div>
-<h2>Equity and drawdown</h2><div class="grid"><div class="card"><div class="mut">Real (live wallet)</div><canvas id="eqR" style="height:150px"></canvas></div><div class="card paper"><div class="mut">Paper (LearnBot + Scalper)</div><canvas id="eqP" style="height:150px"></canvas></div></div>
+<h2>Equity and drawdown</h2><div class="grid"><div class="card"><div class="mut">Real (live wallet)</div><canvas id="eqR" style="height:150px"></canvas></div><div class="card paper"><div class="mut">Paper (LearnBot + MemeBot)</div><canvas id="eqP" style="height:150px"></canvas></div></div>
 <h2>P&amp;L by day and hour</h2><div class="grid"><div class="card" id="byDay"></div><div class="card" id="byHour"></div></div>
 <h2>Controls</h2><div class="card" id="ctl"></div>
 <h2>Open positions</h2><div class="grid" id="coins"></div>
@@ -59,7 +67,7 @@ input,select{background:var(--card2);color:var(--txt);border:1px solid var(--lin
 <div class="tb" style="max-height:75vh"><table id="trades"></table></div>
 <h2>Main bot filters and learning</h2><div class="grid"><div class="card" id="filt"></div><div class="card" id="sett"></div><div class="card" id="lrn"></div></div>
 <h2>LearnBot learning</h2><div class="card paper" id="learn"></div>
-<h2>Scalper variants</h2><div class="tb"><table id="var"></table></div>
+<h2>MemeBot exit profiles</h2><div class="tb"><table id="var"></table></div>
 <p class="mut" style="margin-top:24px"><a href="#" id="out">Lock</a> &middot; Encrypted end to end. Prices from DexScreener, sampled about every 3 s. Times Europe/Warsaw. Gold = real money.</p>
 </div><script>
 let D=null,last=0,FV='',SB='All',SORT={k:'tt',d:-1},OPEN=new Set(),PV={};
@@ -112,7 +120,7 @@ vol:T.reduce((s,t)=>s+(t.size||0),0)+c.reduce((s,t)=>s+(t.size||0)+(t.sol||0),0)
 best:by('sol'),bestp:by('pct'),worst:wy('sol'),bh:bh?[+bh[0],bh[1]]:null,su}}
 function renderStats(){const d=D,su=d.solUsd,T=d.trades.filter(t=>SB=='All'||t.bot==SB);const s=stats(T,su);const k=SB;
 const tk=t=>t?`${esc(t.tok)} <span class="${pc(t.sol)}">${sg(t.sol,4)} SOL / ${sg(t.sol*su,2)} USD / ${sg(t.pct,1)}%</span>`:'-';
-$('sbot').innerHTML=['All','Main','LearnBot','Scalper'].map(b=>`<button class="${SB==b?'on':''}" data-sb="${b}">${b=='Main'?'Real':b}</button>`).join('');
+$('sbot').innerHTML=['All','Main','LearnBot','MemeBot'].map(b=>`<button class="${SB==b?'on':''}" data-sb="${b}">${b=='Main'?'Real':b}</button>`).join('');
 $('stats').innerHTML=`<div class="g2">
 <div class="stat"><small>Realized P&amp;L</small><b>${N('s'+k+'p',s.pnl,'sg4',1)} SOL</b><div class="mut">${N('s'+k+'u',s.pnl*su,'sgu',1)}</div></div>
 <div class="stat"><small>Win rate</small><b>${s.wr==null?'-':s.wr.toFixed(0)+'%'}</b><div class="mut">${s.n} closed / ${s.all} rows</div></div>
@@ -134,7 +142,7 @@ const p=[x,s.site?`<a href="${esc(s.site)}" target="_blank" rel="noopener">site<
 if(!full)return p+` <span class="mut">score ${s.sc??'-'}/3</span>`;
 return`<div class="soc"><div>${p} <span class="mut">&middot; social score ${s.sc??'-'}/3</span></div>${s.ta?`<div class="mut">Post by @${esc(s.ta)}${s.tv?' (verified)':''}${s.tl!=null?', '+s.tl+' likes':''}${s.big&&s.big.length?', <b style="color:var(--real)">big account: '+esc(s.big.join(', '))+'</b>':''}</div>`:''}${s.tt?`<div style="margin-top:3px">"${esc(s.tt)}"</div>`:''}${s.desc?`<div class="mut" style="margin-top:3px">${esc(s.desc)}</div>`:''}${s.kw&&s.kw.length?`<div class="mut">narrative: ${esc(s.kw.join(', '))}</div>`:''}</div>`}
 function renderTrades(){const d=D,q=($('q').value||'').toLowerCase();
-$('flt').innerHTML=[['','All'],['Main','Real'],['LearnBot','LearnBot'],['Scalper','Scalper']].map(([v,n])=>`<button data-v="${v}" class="${FV==v?'on':''}">${n}</button>`).join('');
+$('flt').innerHTML=[['','All'],['Main','Real'],['LearnBot','LearnBot'],['MemeBot','MemeBot']].map(([v,n])=>`<button data-v="${v}" class="${FV==v?'on':''}">${n}</button>`).join('');
 let T=d.trades.filter(t=>(!FV||t.bot==FV)&&(!q||(t.tok+' '+t.reason+' '+(t.var||'')).toLowerCase().includes(q)));
 T=T.slice().sort((a,b)=>{const x=a[SORT.k],y=b[SORT.k];return (x==null?-1e18:typeof x=='string'?0:x)<(y==null?-1e18:typeof y=='string'?0:y)?-SORT.d:SORT.d});
 if(['tok','bot','side'].includes(SORT.k))T.sort((a,b)=>String(a[SORT.k]).localeCompare(String(b[SORT.k]))*SORT.d);
@@ -143,6 +151,19 @@ const H=[['tt','Time'],['bot','Bot'],['tok','Token'],['side','Side'],['pct','P&L
 $('trades').innerHTML='<tr>'+H.map(([k,n],i)=>`<th data-s="${k}" class="${i>0&&i<4?'l ':''}${SORT.k==k?'on':''}">${n}${SORT.k==k?(SORT.d>0?' (asc)':' (desc)'):''}</th>`).join('')+'</tr>'+
 T.slice(0,400).map(t=>{const id=t.bot+t.mint+t.tt;return`<tr class="tr ${t.bot=='Main'?'rl':''}" data-id="${esc(id)}"><td>${t.t}</td><td class="l">${t.bot=='Main'?'<b style="color:var(--real)">REAL</b>':t.bot}${t.var?' <span class="mut">'+esc(t.var)+'</span>':''}</td><td class="l">${esc(t.tok)}</td><td class="l">${t.side}</td><td class="${pc(t.pct)}">${t.pct==null?'-':sg(t.pct,1)+'%'}</td><td class="${pc(t.sol)}">${sg(t.sol,5)}</td><td>${f(t.size,4)}</td><td>${hm(t.hold)}</td></tr>`+
 (OPEN.has(id)?`<tr class="det"><td colspan="8"><div class="kv" style="margin:0;max-width:520px"><span>Entry / exit $</span><span>${px(t.entry)} / ${px(t.exit)}</span><span>P&amp;L USD</span><span class="${pc(t.sol)}">${t.sol==null?'-':sg(t.sol*d.solUsd,2)}</span><span>Reason</span><span>${esc(t.reason)}</span><span>Background</span><span>${socH(t.soc,false)||'-'}</span><span>Links</span><span><a href="https://dexscreener.com/solana/${t.mint}" target="_blank">DexScreener</a> &middot; <a href="https://solscan.io/token/${t.mint}" target="_blank">Solscan</a>${t.tx?` &middot; <a href="https://solscan.io/tx/${t.tx}" target="_blank">tx</a>`:''}</span></div></td></tr>`:'')}).join('')}
+function renderMB(){const e=$('mb');if(!e)return;const M=D.memebot;if(!M){e.innerHTML='<div class="mut">No MemeBot data</div>';return}
+const fm=v=>v==null?'-':mc(v),ph={recording:'ac','paper trading':'on',training:'ac'}[M.phase]||'';
+const pos=(M.positions||[]).map(p=>`<tr><td class="l">${esc(p.tok)}</td><td>${f(p.size,3)}</td><td>${fm(p.entryMcap)}</td><td>${fm(p.mcap)}</td><td class="${pc(p.pct)}">${p.pct==null?'-':sg(p.pct,1)+'%'}</td><td>${hm(p.hold)}</td></tr>`).join('');
+const tr=(M.trades||[]).slice(0,15).map(x=>`<tr><td>${x.t}</td><td class="l">${esc(x.tok)}</td><td class="l">${x.side}</td><td>${fm(x.entryMcap)}</td><td>${fm(x.exitMcap)}</td><td class="${pc(x.pct)}">${x.pct==null?'-':sg(x.pct,1)+'%'}</td><td class="${pc(x.sol)}">${x.sol==null?'-':sg(x.sol,4)}</td></tr>`).join('');
+e.innerHTML=`<div class="mbh"><span class="tag">PAPER, NOT REAL</span><span class="pill ${M.running?'on':'off'}">${M.running?'running':'stopped'}</span><span class="pill ${ph}">${esc(M.phase)}</span><span class="pill">${M.model?'model loaded':'no model yet'}</span></div>
+<div class="mbg"><div><div class="mut">Recording live Pump.fun tokens for training</div><div class="big" style="color:#c3c6cc">${M.recorded??0} <span class="mut" style="font-size:14px">of ${M.target} tokens</span></div>
+<div class="bar"><i style="width:${M.progress||0}%"></i></div><div class="mut" style="margin-top:4px">${M.progress??0}% of data needed for the first model</div>
+<div class="kv"><span>Tracking now</span><span>${M.tracking??'-'} of ${M.maxTokens??'-'}</span><span>New tokens / min</span><span>${M.tokPerMin??'-'}</span><span>Seen this run</span><span>${M.tokensSeen??'-'}</span><span>Run started</span><span>${esc(M.startedLocal||'-')}</span></div></div>
+<div><div class="mut">Learning</div><div class="kv"><span>Paper bank</span><span>${f(M.bankSol,4)} SOL</span><span>Last retrain</span><span>${esc(M.lastRetrainLocal||'not yet')}</span><span>Result</span><span>${esc(M.lastResult||'-')}</span><span>Next retrain check</span><span>${esc(M.nextRetrainLocal||'-')} (Warsaw)</span><span>Tokens learned online</span><span>${M.learned??0}</span></div>
+<div class="mut" style="margin-top:8px">No trades until a model trained on recorded real data passes walk-forward and null tests.</div></div></div>
+<div class="sub"><div class="t">Open positions</div>${pos?`<div class="tb"><table><tr><th class="l">Token</th><th>SOL</th><th>Entry mcap</th><th>Now</th><th>P&amp;L</th><th>Held</th></tr>${pos}</table></div>`:'<div class="mut" style="margin-top:6px">None</div>'}</div>
+<div class="sub"><div class="t">Recent trades</div>${tr?`<div class="tb"><table><tr><th>Time</th><th class="l">Token</th><th class="l">Side</th><th>Entry mcap</th><th>Exit mcap</th><th>P&amp;L %</th><th>SOL</th></tr>${tr}</table></div>`:'<div class="mut" style="margin-top:6px">No trades yet</div>'}</div>
+<div class="sub"><div class="t">Activity</div><div class="feed" style="margin-top:6px">${(M.events||[]).map(v=>`<div><span class="mut">${v.t}</span><span class="k">${esc(v.kind)}</span><span>${esc(v.msg)}</span></div>`).join('')||'<span class="mut">No activity yet</span>'}</div></div>${M.error?`<div class="r" style="margin-top:6px">${esc(M.error)}</div>`:''}`}
 function render(){const d=D,R=d.real,P=d.paper,B=d.bots,su=d.solUsd;
 $('hR').innerHTML=N('hR',R.equity,'s4u')+` <span class="${pc(R.pnl)}" style="font-size:12px">${sg(R.pct,1)}%</span>`;$('hP').innerHTML=N('hP',P.equity,'s4u');$('hS').innerHTML=N('hS',su,'u2');
 $('real').innerHTML=`<div class="card real"><span class="tag">REAL MONEY</span> <span class="mut">live wallet, on-chain</span>
@@ -152,22 +173,22 @@ const L=B[1],S=B[2];
 $('paper').innerHTML=`<div class="card paper"><span class="tag">PAPER, NOT REAL</span> <span class="mut">simulated</span>
 <div class="big" style="color:#c3c6cc">${N('pe',P.equity,'s4')} SOL</div><div class="pn">${N('pp',P.pnl,'sg4',1)} SOL &nbsp; ${N('pu',P.pnlUsd,'sgu',1)} simulated</div>
 <div class="sub"><div class="t">LearnBot</div><div class="kv"><span>Equity / cash</span><span>${N('le',L.equity,'s4')} / ${f(P.learnCash,4)}</span><span>P&amp;L vs ${f(L.start,2)}</span><span class="${pc(L.pnl)}">${sg(L.pnl,4)} (${sg(L.pct,1)}%)</span><span>Win rate / open</span><span>${L.winRate==null?'-':L.winRate+'%'} (${L.wins}/${L.closed}) / ${L.openN}</span></div>${chart(L.curve,L.start,50)}</div>
-<div class="sub"><div class="t">Scalper</div><div class="kv"><span>Equity / cash</span><span>${N('se',S.equity,'s4')} / ${f(S.cash,4)}</span><span>P&amp;L vs ${f(S.start,2)}</span><span class="${pc(S.pnl)}">${sg(S.pnl,4)} (${sg(S.pct,1)}%)</span><span>Win rate / open</span><span>${S.winRate==null?'-':S.winRate+'%'} (${S.wins}/${S.closed}) / ${S.openN} of ${S.maxOpen}, ${S.size} SOL each</span></div>${chart(S.curve,S.start,50)}</div></div>`;
+<div class="sub"><div class="t">MemeBot</div><div class="kv"><span>Equity / cash</span><span>${N('se',S.equity,'s4')} / ${f(S.cash,4)}</span><span>P&amp;L vs ${f(S.start,2)}</span><span class="${pc(S.pnl)}">${sg(S.pnl,4)} (${sg(S.pct,1)}%)</span><span>Win rate / open</span><span>${S.winRate==null?'-':S.winRate+'%'} (${S.wins}/${S.closed}) / ${S.openN} of ${S.maxOpen}, ${S.size} SOL each</span></div>${chart(S.curve,S.start,50)}</div></div>`;
 renderStats();eqdd($('eqR'),B[0].curve,R.start);eqdd($('eqP'),P.curve,P.start);
 $('coins').innerHTML=d.open.map((o,i)=>`<div class="card coin${o.live?' live':''}"><div class="ch"><b>${esc(o.tok)}</b><span class="mut">${o.live?'<b style="color:var(--real)">REAL</b> ':'paper '}${esc(o.bot)}</span></div>
 <div class="ch" style="margin-top:2px"><span class="pn">${N('op'+o.bot+o.mint,o.pct,'p1',1)}</span><span>${o.upnl==null?'':N('ou'+o.bot+o.mint,o.upnl,'sg4',1)+' SOL'}</span></div>
 <div class="kv"><span>Entry${o.entryApprox?' (approx)':''} / now</span><span>$${px(o.entry)} / $${px(o.cur)}</span><span>Size / held</span><span>${f(o.size,4)} SOL / ${hm(o.hold)}</span><span>Entry mcap / now</span><span>${mc(o.emcap)} / ${mc(o.mcap)}</span><span class="g">TP at</span><span>${o.tp==null?'none':mc(o.tpMcap)+' ('+sg(o.tp*100,0)+'%)'}</span><span class="r">SL at</span><span>${o.sl==null?'-':mc(o.slMcap)+' ('+sg(o.sl*100,0)+'%)'}</span></div>
 <div class="mut" style="margin-top:4px">${esc(o.exitNote||'')}</div>${socH(o.soc,true)}
 <canvas data-i="${i}" style="height:120px;margin-top:10px"></canvas><div class="mut" style="margin-top:4px">1m candles. Dashed: grey entry, green TP, red SL.</div>
-<div class="seg" style="margin-bottom:0"><a class="btn" href="https://dexscreener.com/solana/${o.mint}" target="_blank">DexScreener</a><button class="${o.live?'dang':''}" data-close="${esc(o.bot)}|${o.mint}|${esc(o.tok)}|${o.live?1:0}">Close</button></div></div>`).join('')||'<div class="mut">No open positions</div>';
-drawCandles();renderTrades();
+<div class="seg" style="margin-bottom:0"><a class="btn" href="https://dexscreener.com/solana/${o.mint}" target="_blank">DexScreener</a>${o.bot.startsWith('MemeBot')?'':`<button class="${o.live?'dang':''}" data-close="${esc(o.bot)}|${o.mint}|${esc(o.tok)}|${o.live?1:0}">Close</button>`}</div></div>`).join('')||'<div class="mut">No open positions</div>';
+drawCandles();renderTrades();renderMB();
 const Ln=d.learn;$('learn').innerHTML=`<div class="kv"><span>Exploration</span><span>${Ln.exploration??'-'}</span><span>Avg reward</span><span class="${pc(Ln.avgReward)}">${Ln.avgReward??'-'}</span><span>Episodes / wins</span><span>${Ln.episodes} / ${Ln.wins}</span><span>Steps</span><span>${Ln.steps}</span></div>
 <details><summary class="mut" style="margin-top:8px;cursor:pointer">Rules learned</summary><div class="mut" style="margin-top:8px">Best</div><ul>${Ln.best.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul><div class="mut">Worst</div><ul>${Ln.worst.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul><div class="mut">Exit</div><ul>${Ln.exitRules.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></details>`;
 const F=d.main.filters,tot=Object.values(F).reduce((a,b)=>a+b,0)||1;
 $('filt').innerHTML='<b>Rejections (current run)</b><div class="kv">'+Object.entries(F).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${esc(k)}</span><span>${v} (${(v/tot*100).toFixed(0)}%)</span>`).join('')+`</div><div class="mut" style="margin-top:6px">last log ${esc(d.main.lastLog)}</div>`;
 $('sett').innerHTML='<b>Settings</b><div class="kv">'+Object.entries(d.main.settings).map(([k,v])=>`<span>${esc(k)}</span><span>${esc(v)}</span>`).join('')+`</div><div class="mut" style="margin-top:6px"><a href="https://solscan.io/account/${d.main.wallet}" target="_blank">Wallet on Solscan</a></div>`;
 const LJ=d.main.learned||{},E=LJ.effective||{},BS=LJ.base||{};$('lrn').innerHTML='<b>Learned thresholds</b><div class="kv">'+Object.entries(E).map(([k,v])=>`<span>${esc(k)}</span><span>${esc(v)}${BS[k]!=null&&BS[k]!=v?' (base '+esc(BS[k])+')':''}</span>`).join('')+`<span>Blocked rug flags</span><span>${esc((LJ.badFlags||[]).join(', ')||'none')}</span><span>Trades learned from</span><span>${LJ.samples??0}</span></div>`;
-$('var').innerHTML='<tr><th>Variant</th><th>Closed</th><th>Wins</th><th>Win %</th><th>Net SOL</th><th>Open</th></tr>'+d.scalp.variants.map(v=>`<tr><td>${esc(v.name)}</td><td>${v.trades}</td><td>${v.wins}</td><td>${v.trades?(v.wins/v.trades*100).toFixed(0)+'%':'-'}</td><td class="${pc(v.net)}">${sg(v.net,5)}</td><td>${v.open}</td></tr>`).join('');
+$('var').innerHTML='<tr><th>Profile</th><th>Closed</th><th>Wins</th><th>Win %</th><th>Net SOL</th><th>Open</th></tr>'+d.scalp.variants.map(v=>`<tr><td>${esc(v.name)}</td><td>${v.trades}</td><td>${v.wins}</td><td>${v.trades?(v.wins/v.trades*100).toFixed(0)+'%':'-'}</td><td class="${pc(v.net)}">${sg(v.net,5)}</td><td>${v.open}</td></tr>`).join('');
 animate()}
 $('flt').onclick=e=>{const v=e.target.dataset&&e.target.dataset.v;if(v!=null){FV=v;renderTrades()}};
 $('sbot').onclick=e=>{const v=e.target.dataset&&e.target.dataset.sb;if(v){SB=v;renderStats();animate()}};
@@ -179,11 +200,11 @@ function showRes(){const e=$('res');if(e)e.innerHTML=RES.map(r=>`<div class="${r
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-close]');if(!b)return;const [bot,mint,tok,live]=b.dataset.close.split('|');
 if(confirm((live==='1'?'REAL MONEY: sell ':'Paper: close ')+tok+' on '+bot+'?'))cmd('close',{bot,mint})});
 function ctrl(){$('ctl').innerHTML=`<div class="seg"><button onclick="cmd('ping',{})">Ping box</button></div>
-<div class="seg">${['Main','LearnBot','Scalper'].map(b=>`<button onclick="confirm('Pause ${b}?')&&cmd('pause',{bot:'${b}'})">Pause ${b}</button><button onclick="cmd('resume',{bot:'${b}'})">Resume ${b}</button>`).join('')}</div>
-<div class="mut" style="margin-top:6px">Move paper SOL</div><div class="seg"><select id="xf"><option value="LearnBot|Scalper">LearnBot to Scalper</option><option value="Scalper|LearnBot">Scalper to LearnBot</option></select>
+<div class="seg">${['Main','LearnBot','MemeBot'].map(b=>`<button onclick="confirm('Pause ${b}?')&&cmd('pause',{bot:'${b}'})">Pause ${b}</button><button onclick="cmd('resume',{bot:'${b}'})">Resume ${b}</button>`).join('')}</div>
+<div class="mut" style="margin-top:6px">Move paper SOL</div><div class="seg"><select id="xf"><option value="">MemeBot does not support paper transfers</option></select>
 <input id="xa" type="number" step="0.01" min="0" placeholder="SOL" style="width:90px"><button onclick="xfer()">Move</button></div>
 <div class="mut">Move real SOL: no live bots yet</div><div id="res" style="margin-top:8px;font-size:13px"></div>`;showRes()}
-function xfer(){const [from,to]=$('xf').value.split('|'),amount=+$('xa').value;if(!(amount>0))return;if(confirm('Move '+amount+' paper SOL from '+from+' to '+to+'?'))cmd('transfer_paper',{from,to,amount})}
+function xfer(){if(!$('xf').value)return;const [from,to]=$('xf').value.split('|'),amount=+$('xa').value;if(!(amount>0))return;if(confirm('Move '+amount+' paper SOL from '+from+' to '+to+'?'))cmd('transfer_paper',{from,to,amount})}
 const SALT='b058d9955cee46cd3966dd1dd86051cd';const [TOPIC,CTOPIC]=location.hash.slice(1).split('.');let KEY=null,lastId='';
 const b64=u=>btoa(String.fromCharCode(...new Uint8Array(u))),unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 const hex=h=>new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));
