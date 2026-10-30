@@ -52,25 +52,40 @@ input,select{background:var(--card2);color:var(--txt);border:1px solid var(--lin
 .mbg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:10px}
 .feed{font-size:12.5px;max-height:300px;overflow:auto}.feed div{display:grid;grid-template-columns:64px 70px 1fr;gap:8px;padding:4px 0;border-bottom:1px solid var(--line)}.feed div:last-child{border-bottom:0}
 .feed .k{color:var(--mut);text-transform:uppercase;font-size:10.5px;letter-spacing:.08em;padding-top:2px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:8px -14px 0;padding:2px 14px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:0 0 auto;padding:6px 13px;font-size:13px}
+section[data-tab]{display:none}section[data-tab].show{display:block}
+.secl{display:flex;align-items:center;gap:8px;margin:22px 2px 10px}.secl h2{margin:0}.secl .line{flex:1;height:1px;background:var(--line)}
+.secl.real h2{color:var(--real)}
+.bc{display:flex;flex-direction:column;gap:10px}.bc .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.bc .top b{font-size:16px}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.form label{display:flex;flex-direction:column;font-size:11.5px;color:var(--mut);gap:3px;letter-spacing:.03em}.form input{width:100%}
+.note{font-size:12.5px;color:var(--mut);background:var(--card2);border-radius:10px;padding:8px 10px}
+button.pri{background:var(--acc);color:#111;border-color:var(--acc);font-weight:600}button:disabled{opacity:.45;cursor:not-allowed}
+.wl{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:13.5px}.wl code{font-size:11.5px;color:var(--mut);word-break:break-all}
+#toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:max(16px,env(safe-area-inset-bottom));z-index:50;display:flex;flex-direction:column;gap:8px;width:min(92vw,460px);pointer-events:none}
+.toast{pointer-events:auto;background:#1d1f24;border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:12px;padding:10px 12px;font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.45);animation:tin .25s}
+.toast.ok{border-left-color:var(--g)}.toast.bad{border-left-color:var(--r)}@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.skel{color:var(--mut);padding:18px;text-align:center}
+@media(max-width:600px){.w{padding:0 10px 64px}header{margin:0 -10px 6px;padding:8px 10px}.tabs{margin:8px -10px 0;padding:2px 10px 4px}.card{padding:12px}button,.btn{padding:8px 14px}}
 </style></head><body>
 <div class="w" id="lg" style="max-width:360px;padding-top:90px"><div style="font-size:22px;font-weight:700;margin-bottom:14px">Sol bots</div><input id="pw" type="password" placeholder="Password" autocomplete="current-password" style="width:100%;padding:12px;font-size:16px"><label class="mut" style="display:block;margin:12px 0"><input type="checkbox" id="rem"> Remember on this device</label><button id="go" class="on" style="width:100%;padding:11px">Unlock</button><div id="msg" class="r" style="margin-top:10px"></div></div>
 <div class="w" id="app" style="display:none">
-<header><div class="hd"><div class="hv"><div><small>Real</small><b id="hR">-</b></div><div><small>Paper</small><b id="hP">-</b></div><div><small>SOL</small><b id="hS">-</b></div></div><div class="st"><span id="dot"></span><span id="upd">connecting</span></div></div></header>
-<div class="grid"><div id="real"></div><div id="paper"></div></div>
-<h2>MemeBot (paper)</h2><div class="card paper" id="mb"><div class="mut">Loading...</div></div>
+<header><div class="hd"><div class="hv"><div><small>Real</small><b id="hR">-</b></div><div><small>Paper</small><b id="hP">-</b></div><div><small>SOL</small><b id="hS">-</b></div></div><div class="st"><span id="dot"></span><span id="upd">connecting</span></div></div><nav class="tabs" id="tabs"></nav></header><div id="toasts"></div>
+<section data-tab="Overview"><div class="secl real"><h2>Real money</h2><div class="line"></div></div><div id="real"><div class="card skel">Loading...</div></div><div class="secl"><h2>Paper (simulated)</h2><div class="line"></div></div><div id="paper"><div class="card skel">Loading...</div></div>
 <h2>Records</h2><div class="seg" id="sbot"></div><div class="card" id="stats"></div>
 <h2>Equity and drawdown</h2><div class="grid"><div class="card"><div class="mut">Real (live wallet)</div><canvas id="eqR" style="height:150px"></canvas></div><div class="card paper"><div class="mut">Paper (LearnBot + MemeBot)</div><canvas id="eqP" style="height:150px"></canvas></div></div>
-<h2>P&amp;L by day and hour</h2><div class="grid"><div class="card" id="byDay"></div><div class="card" id="byHour"></div></div>
-<h2>Controls</h2><div class="card" id="ctl"></div>
-<h2>Open positions</h2><div class="grid" id="coins"></div>
-<h2>Trades</h2><div class="seg" id="flt"></div><div class="seg"><input id="q" placeholder="Search token or reason" style="flex:1;min-width:160px"><span class="mut" id="tc"></span></div>
-<div class="tb" style="max-height:75vh"><table id="trades"></table></div>
-<h2>Main bot filters and learning</h2><div class="grid"><div class="card" id="filt"></div><div class="card" id="sett"></div><div class="card" id="lrn"></div></div>
+<h2>P&amp;L by day and hour</h2><div class="grid"><div class="card" id="byDay"></div><div class="card" id="byHour"></div></div></section>
+<section data-tab="Bots"><div class="secl"><h2>Bot controls</h2><div class="line"></div></div><div class="grid" id="botc"><div class="card skel">Loading...</div></div><div class="secl real"><h2>Wallets and real SOL</h2><div class="line"></div></div><div class="card real" id="wal"></div><div class="secl"><h2>Paper SOL and box</h2><div class="line"></div></div><div class="card" id="ctl"></div></section>
+<section data-tab="Positions"><h2>Open positions</h2><div class="grid" id="coins"></div></section>
+<section data-tab="Trades"><h2>Trades</h2><div class="seg" id="flt"></div><div class="seg"><input id="q" placeholder="Search token or reason" style="flex:1;min-width:160px"><span class="mut" id="tc"></span></div>
+<div class="tb" style="max-height:75vh"><table id="trades"></table></div></section>
+<section data-tab="MemeBot"><h2>MemeBot (paper)</h2><div class="card paper" id="mb"><div class="skel">Loading...</div></div><h2>MemeBot exit profiles</h2><div class="tb"><table id="var"></table></div></section>
+<section data-tab="Learning"><h2>Main bot filters and learning</h2><div class="grid"><div class="card" id="filt"></div><div class="card" id="sett"></div><div class="card" id="lrn"></div></div>
 <h2>LearnBot learning</h2><div class="card paper" id="learn"></div>
-<h2>MemeBot exit profiles</h2><div class="tb"><table id="var"></table></div>
+</section>
 <p class="mut" style="margin-top:24px"><a href="#" id="out">Lock</a> &middot; Encrypted end to end. Prices from DexScreener, sampled about every 3 s. Times Europe/Warsaw. Gold = real money.</p>
 </div><script>
-let D=null,last=0,FV='',SB='All',SORT={k:'tt',d:-1},OPEN=new Set(),PV={};
+let TAB=new URLSearchParams(location.search).get('tab')||localStorage.getItem('tab')||'Overview',D=null,last=0,FV='',SB='All',SORT={k:'tt',d:-1},OPEN=new Set(),PV={};
 const $=i=>document.getElementById(i);
 const f=(x,d=4)=>x==null||isNaN(x)?'-':(+x).toFixed(d),pc=x=>x==null?'':x>0?'g':x<0?'r':'';
 const sg=(x,d=4)=>x==null||isNaN(x)?'-':(x>0?'+':'')+(+x).toFixed(d);
@@ -164,7 +179,34 @@ e.innerHTML=`<div class="mbh"><span class="tag">PAPER, NOT REAL</span><span clas
 <div class="sub"><div class="t">Open positions</div>${pos?`<div class="tb"><table><tr><th class="l">Token</th><th>SOL</th><th>Entry mcap</th><th>Now</th><th>P&amp;L</th><th>Held</th></tr>${pos}</table></div>`:'<div class="mut" style="margin-top:6px">None</div>'}</div>
 <div class="sub"><div class="t">Recent trades</div>${tr?`<div class="tb"><table><tr><th>Time</th><th class="l">Token</th><th class="l">Side</th><th>Entry mcap</th><th>Exit mcap</th><th>P&amp;L %</th><th>SOL</th></tr>${tr}</table></div>`:'<div class="mut" style="margin-top:6px">No trades yet</div>'}</div>
 <div class="sub"><div class="t">Activity</div><div class="feed" style="margin-top:6px">${(M.events||[]).map(v=>`<div><span class="mut">${v.t}</span><span class="k">${esc(v.kind)}</span><span>${esc(v.msg)}</span></div>`).join('')||'<span class="mut">No activity yet</span>'}</div></div>${M.error?`<div class="r" style="margin-top:6px">${esc(M.error)}</div>`:''}`}
-function render(){const d=D,R=d.real,P=d.paper,B=d.bots,su=d.solUsd;
+const TABS=['Overview','Bots','Positions','Trades','MemeBot','Learning'];
+function tabs(){$('tabs').innerHTML=TABS.map(x=>`<button class="${TAB==x?'on':''}" data-tab="${x}">${x}</button>`).join('');document.querySelectorAll('section[data-tab]').forEach(s=>s.classList.toggle('show',s.dataset.tab==TAB))}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#tabs button');if(!b)return;TAB=b.dataset.tab;localStorage.setItem('tab',TAB);tabs();if(D)render();window.scrollTo(0,0)});tabs();
+const LBL={max_sol_live:'Live max SOL per trade',size_sol:'Size per coin (SOL)',size_pct:'Size per coin (% of balance)',max_open:'Max open positions',tp:'Take profit (0.27 = +27%)',sl:'Stop loss (-0.2 = -20%)'};
+function renderBots(){const C=D.controls;if(!C){$('botc').innerHTML='<div class="card skel">No control data yet</div>';return}
+if(C.error){$('botc').innerHTML=`<div class="card r">Controls unavailable: ${esc(C.error)}</div>`;return}
+const host=$('botc');if(host.contains(document.activeElement)&&document.activeElement.tagName=='INPUT')return;
+host.innerHTML=C.bots.map(b=>{const S=b.settings||{},V=S.values||{},L=S.limits||{},live=b.mode=='live';
+const form=S.readonly?`<div class="note">${esc(S.readonly)}</div>`:`<div class="form">${Object.keys(L).map(k=>`<label>${LBL[k]||k}<input type="number" step="any" id="s_${b.bot}_${k}" value="${V[k]??''}" min="${L[k][0]}" max="${L[k][1]}"><span>${L[k][0]} to ${L[k][1]}</span></label>`).join('')}</div>
+<div class="seg" style="margin:0"><button class="pri" data-save="${b.bot}">Save and restart</button><span class="mut">${b.bot=='Main'?'Restarts the LIVE bot with stop.sh / start.sh; positions are kept.':'Restarts the paper bot.'}</span></div>`;
+return `<div class="card bc ${live?'real':'paper'}"><div class="top"><b>${b.bot}</b><span class="mbh" style="margin:0"><span class="pill ${b.running?'on':'off'}">${b.running?'running':'stopped'}</span><span class="pill" style="${live?'background:var(--real);color:#141414':''}">${live?'LIVE':'paper'}</span></span></div>
+${form}
+${b.walletSol!==undefined?`<div class="kv" style="margin-top:0"><span>Hot wallet</span><span>${b.walletSol==null?'-':f(b.walletSol,4)+' SOL'}</span><span>Live cap per trade</span><span>${b.maxSolLive} SOL</span><span>Open live positions</span><span>${b.openLive||0}</span></div>`:''}
+<div class="seg" style="margin:0">${b.canPause?`<button data-pr="pause|${b.bot}">Pause</button><button data-pr="resume|${b.bot}">Start</button>`:'<span class="mut">Start/pause not managed here</span>'}
+<button data-mode="${b.bot}|${live?'paper':'live'}" ${b.liveAllowed?'':'disabled'}>Switch to ${live?'paper':'live'}</button></div>
+${b.liveAllowed?'':`<div class="note">${live?'Paper switch':'Live'} unavailable: ${esc(b.liveReason||'')}</div>`}</div>`}).join('');
+const ws=C.wallets||[];$('wal').innerHTML=`<span class="tag">REAL MONEY</span><div class="wl" style="margin-top:10px">${ws.map(w=>`<div><b>${w.bot}</b><br><code>${esc(w.address)}</code></div><div style="text-align:right">${w.sol==null?'-':f(w.sol,4)+' SOL'}<br><a href="https://solscan.io/account/${w.address}" target="_blank">Solscan</a></div>`).join('')}</div>
+<div class="sub"><div class="t">Move real SOL</div><div class="mut">Only between Main and a box-generated bot wallet. Max ${C.realCap} SOL per move; Main keeps at least ${C.mainKeep} SOL.</div>
+<div class="form" style="margin-top:8px"><label>From<select id="rf">${ws.map(w=>`<option>${w.bot}</option>`).join('')}</select></label><label>To<select id="rt">${ws.map((w,i)=>`<option ${i==1?'selected':''}>${w.bot}</option>`).join('')}</select></label><label>Amount SOL<input id="ra" type="number" step="0.001" min="0" max="${C.realCap}"></label></div>
+<div class="seg"><button data-real="dry">Dry run</button><button class="dang" data-real="send">Send real SOL</button></div></div>`}
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-save],[data-pr],[data-mode],[data-real]');if(!t||t.disabled)return;
+if(t.dataset.save){const b=t.dataset.save,a={bot:b};document.querySelectorAll(`[id^="s_${b}_"]`).forEach(i=>{if(i.value!=='')a[i.id.slice(3+b.length)]=+i.value});
+if(confirm((b=='Main'?'LIVE BOT: ':'')+'Save '+JSON.stringify(a)+' and restart '+b+'?'))cmd('set_settings',a)}
+else if(t.dataset.pr){const [a,b]=t.dataset.pr.split('|');if(a=='resume'||confirm('Pause '+b+'?'))cmd(a,{bot:b})}
+else if(t.dataset.mode){const [b,m]=t.dataset.mode.split('|');if(!confirm('Switch '+b+' to '+m.toUpperCase()+'?'))return;const c=prompt('Type the bot name ('+b+') to confirm');if(c===b)cmd('set_mode',{bot:b,mode:m,confirm:c});else toast('Not confirmed',false)}
+else if(t.dataset.real){const from=$('rf').value,to=$('rt').value,amount=+$('ra').value;if(!(amount>0)){toast('Enter an amount',false);return}
+if(t.dataset.real=='dry')cmd('transfer_real',{from,to,amount,dry:true});else{if(!confirm('REAL MONEY: send '+amount+' SOL from '+from+' to '+to+'?'))return;const c=prompt('Type SEND to confirm');if(c==='SEND')cmd('transfer_real',{from,to,amount,confirm:c});else toast('Not confirmed',false)}}});
+function render(){tabs();try{renderBots()}catch(e){console.log(e)}const d=D,R=d.real,P=d.paper,B=d.bots,su=d.solUsd;
 $('hR').innerHTML=N('hR',R.equity,'s4u')+` <span class="${pc(R.pnl)}" style="font-size:12px">${sg(R.pct,1)}%</span>`;$('hP').innerHTML=N('hP',P.equity,'s4u');$('hS').innerHTML=N('hS',su,'u2');
 $('real').innerHTML=`<div class="card real"><span class="tag">REAL MONEY</span> <span class="mut">live wallet, on-chain</span>
 <div class="big">${N('re',R.equity,'s4')} SOL</div><div class="pn">${N('rp',R.pnl,'sg4',1)} SOL &nbsp; ${N('ru',R.pnlUsd,'sgu',1)} &nbsp; <span class="${pc(R.pct)}">${sg(R.pct,1)}%</span></div>
@@ -196,11 +238,12 @@ $('q').oninput=()=>D&&renderTrades();
 $('trades').onclick=e=>{const th=e.target.closest('th');if(th){const k=th.dataset.s;SORT=SORT.k==k?{k,d:-SORT.d}:{k,d:-1};return renderTrades()}const tr=e.target.closest('tr.tr');if(tr&&!e.target.closest('a')){const id=tr.dataset.id;OPEN.has(id)?OPEN.delete(id):OPEN.add(id);renderTrades()}};
 setInterval(()=>{if(!last)return;const s=Math.max(0,Math.round(Date.now()/1000-last));$('upd').textContent=s<3?'live':'updated '+s+'s ago';$('dot').style.background=s<15?'#34d399':s<60?'#f5c451':'#f87171'},500);
 let RES=[];
-function showRes(){const e=$('res');if(e)e.innerHTML=RES.map(r=>`<div class="${r.ok?'g':'r'}">${tm(r.t)} ${esc(r.msg)}</div>`).join('')||'<span class="mut">No commands yet</span>'}
+function toast(m,ok){const e=document.createElement('div');e.className='toast '+(ok==null?'':ok?'ok':'bad');e.textContent=m;$('toasts').appendChild(e);setTimeout(()=>e.remove(),ok===false?9000:5000)}
+let RESN=0;function showRes(){if(RES.length&&RES[0]!==showRes.l){showRes.l=RES[0];toast(RES[0].msg,RES[0].ok&&!/^sent /.test(RES[0].msg)?true:/^sent /.test(RES[0].msg)?null:false)}const e=$('res');if(e)e.innerHTML=RES.map(r=>`<div class="${r.ok?'g':'r'}">${tm(r.t)} ${esc(r.msg)}</div>`).join('')||'<span class="mut">No commands yet</span>'}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-close]');if(!b)return;const [bot,mint,tok,live]=b.dataset.close.split('|');
 if(confirm((live==='1'?'REAL MONEY: sell ':'Paper: close ')+tok+' on '+bot+'?'))cmd('close',{bot,mint})});
 function ctrl(){$('ctl').innerHTML=`<div class="seg"><button onclick="cmd('ping',{})">Ping box</button></div>
-<div class="seg">${['Main','LearnBot','MemeBot'].map(b=>`<button onclick="confirm('Pause ${b}?')&&cmd('pause',{bot:'${b}'})">Pause ${b}</button><button onclick="cmd('resume',{bot:'${b}'})">Resume ${b}</button>`).join('')}</div>
+
 <div class="mut" style="margin-top:6px">Move paper SOL</div><div class="seg"><select id="xf"><option value="">MemeBot does not support paper transfers</option></select>
 <input id="xa" type="number" step="0.01" min="0" placeholder="SOL" style="width:90px"><button onclick="xfer()">Move</button></div>
 <div class="mut">Move real SOL: no live bots yet</div><div id="res" style="margin-top:8px;font-size:13px"></div>`;showRes()}
@@ -216,7 +259,27 @@ async function dec(buf){buf=new Uint8Array(buf);const p=await crypto.subtle.decr
 async function openMsg(m){if(m.event!=='message')return null;if(m.attachment){const r=await fetch(m.attachment.url,{cache:'no-store'});return dec(await r.arrayBuffer())}return dec(unb64(m.message))}
 function apply(j){if(j.k==='full'){D=j}else if(j.k==='live'&&D){const ph={},cd={};D.open.forEach(o=>{ph[o.mint]=o.ph;cd[o.mint]=o.cd});const so={};D.open.forEach(o=>so[o.bot+o.mint]=o.soc);D.serverTime=j.serverTime;D.solUsd=j.solUsd;D.real=j.real;Object.assign(D.paper,j.paper);D.open=j.open.map(o=>({...o,ph:ph[o.mint]||[],cd:cd[o.mint]||[],soc:o.soc||so[o.bot+o.mint]}))}
 else if(j.k==='res'){RES.unshift(j);RES=RES.slice(0,8);showRes();return}else return;last=D.serverTime;render()}
-async function start(){const r=await fetch('https://ntfy.sh/'+TOPIC+'/json?poll=1&since=10m',{cache:'no-store'});const L=(await r.text()).trim().split('\n').filter(Boolean).map(JSON.parse);
+// ---- primary transport: MQTT over WSS (public.cloud.shiftr.io), same AES-GCM payloads; ntfy is the fallback ----
+const MQ={ws:null,ok:false,buf:new Uint8Array(0),pid:1,ping:null};const MB='lbd/'+TOPIC;
+const u8=a=>Uint8Array.from(a),te=s=>new TextEncoder().encode(s);
+function vlen(n){const o=[];do{let b=n%128;n=Math.floor(n/128);if(n>0)b|=128;o.push(b)}while(n>0);return o}
+function str(s){const b=te(s);return [b.length>>8,b.length&255,...b]}
+function pkt(h,body){const b=body instanceof Uint8Array?body:u8(body);const o=new Uint8Array(1+vlen(b.length).length+b.length);const v=vlen(b.length);o[0]=h;o.set(v,1);o.set(b,1+v.length);return o}
+function mqPub(topic,payload){if(!MQ.ok)return false;const t=str(topic),p=payload instanceof Uint8Array?payload:te(payload);const b=new Uint8Array(t.length+p.length);b.set(t);b.set(p,t.length);MQ.ws.send(pkt(0x30,b));return true}
+function mqConnect(onMsg){return new Promise((res,rej)=>{let ws;try{ws=new WebSocket('wss://public.cloud.shiftr.io','mqtt')}catch(e){return rej(e)}ws.binaryType='arraybuffer';MQ.ws=ws;
+ const tm=setTimeout(()=>{try{ws.close()}catch{}rej(Error('mqtt timeout'))},8000);
+ ws.onopen=()=>{const cid='lbp'+Math.random().toString(36).slice(2,10);ws.send(pkt(0x10,[...str('MQTT'),4,0xC2,0,60,...str(cid),...str('public'),...str('public')]))};
+ ws.onmessage=e=>{let b=new Uint8Array(MQ.buf.length+e.data.byteLength);b.set(MQ.buf);b.set(new Uint8Array(e.data),MQ.buf.length);
+  while(b.length>=2){let m=1,len=0,i=1,d;do{d=b[i++];len+=(d&127)*m;m*=128}while(d&128&&i<b.length);if(b.length<i+len)break;const h=b[0]>>4,body=b.slice(i,i+len);b=b.slice(i+len);
+   if(h===2){clearTimeout(tm);if(body[1]!==0)return rej(Error('connack '+body[1]));MQ.ok=true;ws.send(pkt(0x82,[0,MQ.pid++,...str(MB+'/d'),0]));MQ.ping=setInterval(()=>ws.readyState===1&&ws.send(u8([0xC0,0])),30000);res()}
+   else if(h===3){const tl=(body[0]<<8)|body[1];const qos=(b[0]>>1)&3;onMsg(body.slice(2+tl+(qos?2:0)))}}
+  MQ.buf=b};
+ ws.onclose=()=>{const was=MQ.ok;MQ.ok=false;clearInterval(MQ.ping);clearTimeout(tm);if(was)setTimeout(()=>mqStart().catch(()=>{}),3000);rej(Error('closed'))};ws.onerror=()=>{}})}
+async function mqStart(){await mqConnect(async raw=>{MQ.last=Date.now();try{const j=await dec(raw);apply(j)}catch(x){}});MQ.last=Date.now();mqPub(MB+'/q','full');MQ.req=setInterval(()=>{if(!D&&MQ.ok)mqPub(MB+'/q','full')},4000)}
+let VIA='';
+async function start(){try{await mqStart();for(let i=0;i<40&&!D;i++)await new Promise(r=>setTimeout(r,250));if(D){VIA='relay';const wd=setInterval(()=>{if(Date.now()-MQ.last>45000){clearInterval(wd);console.log('relay silent, switching to ntfy');VIA='ntfy';try{MQ.ws.onclose=null;MQ.ws.close()}catch{}MQ.ok=false;startNtfy().catch(e=>console.log(e))}},5000);return}}catch(e){console.log('mqtt failed, ntfy fallback',e)}
+VIA='ntfy';return startNtfy()}
+async function startNtfy(){const r=await fetch('https://ntfy.sh/'+TOPIC+'/json?poll=1&since=10m',{cache:'no-store'});const L=(await r.text()).trim().split('\n').filter(Boolean).map(JSON.parse);
 let fi=-1;L.forEach((m,i)=>{if(m.attachment)fi=i});const use=fi<0?L.slice(-1):L.slice(fi);
 for(const m of use){const j=await openMsg(m);if(j.k!=='res')apply(j);lastId=m.id}
 if(!D)throw Error('no full payload yet');sse()}
@@ -227,7 +290,7 @@ async function cmd(action,args){if(!CTOPIC){alert('no command topic in link');re
 const nonce=b64(crypto.getRandomValues(new Uint8Array(12)));const pt=await gzip(JSON.stringify({action,args,ts:Date.now()/1000,nonce}));
 const iv=crypto.getRandomValues(new Uint8Array(12));const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:new TextEncoder().encode('cmd')},KEY,pt));
 const all=new Uint8Array(12+ct.length);all.set(iv);all.set(ct,12);RES.unshift({ok:true,msg:'sent '+action+'...',t:Date.now()/1000});showRes();
-await fetch('https://ntfy.sh/'+CTOPIC,{method:'POST',body:b64(all)})}
+if(!(MQ.ok&&mqPub(MB+'/c',b64(all))))await fetch('https://ntfy.sh/'+CTOPIC,{method:'POST',body:b64(all)})}
 async function login(k){KEY=k;try{await start();$('lg').style.display='none';$('app').style.display='';ctrl();render();return true}catch(e){console.log(e);KEY=null;return false}}
 $('go').onclick=async()=>{$('msg').textContent='Checking...';const k=await derive($('pw').value);
 if(await login(k)){const raw=b64(await crypto.subtle.exportKey('raw',k));(($('rem').checked)?localStorage:sessionStorage).setItem('dk',raw);$('pw').value=''}else $('msg').textContent='Wrong password'};
