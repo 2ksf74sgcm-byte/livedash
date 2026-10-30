@@ -1,112 +1,190 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0e0f11"><title>Sol bots</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b0c0e"><title>Sol bots</title>
 <style>
-:root{--bg:#0e0f11;--card:#17181b;--line:#25262a;--mut:#8a8d94;--txt:#e4e5e8;--g:#3fb950;--r:#f85149;--real:#e3b341}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
-.w{max-width:1100px;margin:0 auto;padding:14px 14px 40px}
-.top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px;color:var(--mut)}
-#dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#555;margin-right:6px}
-h2{font-size:12px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;margin:28px 0 10px}
+:root{--bg:#0b0c0e;--card:#141518;--card2:#1a1c20;--line:#24262b;--mut:#8b8f98;--txt:#eceef2;--g:#34d399;--r:#f87171;--real:#f5c451;--acc:#a5b4fc}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
+.w{max-width:1100px;margin:0 auto;padding:0 14px 48px}
+header{position:sticky;top:0;z-index:20;background:rgba(11,12,14,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin:0 -14px 6px;padding:10px 14px}
+.hd{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.hv{display:flex;gap:18px}.hv div{display:flex;flex-direction:column;line-height:1.2}.hv small{font-size:11px;color:var(--mut);letter-spacing:.06em;text-transform:uppercase}.hv b{font-size:16px;font-weight:650}
+.st{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px}#dot{width:8px;height:8px;border-radius:50%;background:#555;transition:background .3s}
+h2{font-size:11.5px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;margin:26px 2px 10px}
 .mut{color:var(--mut);font-size:13px}.g{color:var(--g)}.r{color:var(--r)}
-.sec{border-radius:12px;padding:14px;margin-top:12px;background:var(--card);border:1px solid var(--line)}
-.sec.real{border:2px solid var(--real);background:linear-gradient(#1d1a10,var(--card) 60%)}
-.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.1em;padding:2px 8px;border-radius:4px}
-.real .tag{background:var(--real);color:#111}.paper .tag{background:#2a2c31;color:#b5b8bf}
-.paper{border-style:dashed!important}
-.big{font-size:34px;font-weight:650;margin:6px 0 0;font-variant-numeric:tabular-nums}
-.pn{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
-.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;font-size:14px;margin-top:10px;font-variant-numeric:tabular-nums}
-.kv span:nth-child(odd){color:var(--mut)}.kv span:nth-child(even){text-align:right}
+.card{border-radius:14px;padding:14px;background:var(--card);border:1px solid var(--line)}
+.card.real{border-color:rgba(245,196,81,.55);background:linear-gradient(180deg,rgba(245,196,81,.07),var(--card) 55%)}
+.card.paper{border-style:dashed}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.12em;padding:2px 8px;border-radius:999px}
+.real .tag{background:var(--real);color:#141414}.paper .tag{background:#26282e;color:#c3c6cc}
+.big{font-size:32px;font-weight:700;margin:8px 0 0;letter-spacing:-.01em}
+.pn{font-size:15px;font-weight:600}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13.5px;margin-top:10px}
+.kv>span:nth-child(odd){color:var(--mut)}.kv>span:nth-child(even){text-align:right}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
-.sub{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
-.sub .t{font-weight:600}
-svg{width:100%;display:block;margin-top:10px}
-.ax{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut);font-variant-numeric:tabular-nums}
-.coin{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
-.coin.live{border:2px solid var(--real)}
-.ch{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.ch b{font-size:16px}
-.tb{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;-webkit-overflow-scrolling:touch}
-table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
-th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}
-th{color:var(--mut);font-weight:500;position:sticky;top:0;background:var(--card)}
-td:first-child,th:first-child,.l{text-align:left}
-tr.rl td:first-child{box-shadow:inset 3px 0 var(--real)}
-a{color:#9db1cc;text-decoration:none}
-.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
-.seg button{background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:18px;padding:6px 14px;font-size:14px}
-.seg button.on{background:var(--txt);color:#111;border-color:var(--txt)}
-ul{margin:4px 0 8px;padding-left:18px;font-size:13.5px}li{margin:3px 0}
-details summary{cursor:pointer;color:var(--mut);font-size:13px;margin-top:8px}
-@media(max-width:600px){.big{font-size:30px}.w{padding:10px 10px 40px}th,td{padding:7px 8px}}
-</style></head><body><div class="w" id="lg" style="max-width:360px;padding-top:80px"><h2>Sol bots</h2><input id="pw" type="password" placeholder="Password" autocomplete="current-password" style="width:100%;padding:12px;font-size:16px;background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:10px"><label class="mut" style="display:block;margin:10px 0"><input type="checkbox" id="rem"> Remember on this device</label><div class="seg"><button id="go" class="on">Unlock</button></div><div id="msg" class="r"></div></div><div class="w" id="app" style="display:none">
-<div class="top"><span><span id="dot"></span><span id="upd">connecting</span></span><span id="tot"></span></div>
-<div id="real"></div><div id="paper"></div>
-<h2>Controls</h2><div class="sec" id="ctl"></div><h2>Held coins, live price</h2><div class="grid" id="coins"></div>
-<h2>Trades</h2><div class="seg" id="flt"></div>
-<div class="tb" style="max-height:70vh"><table id="trades"></table></div>
-<h2>LearnBot learning</h2><div class="sec paper" id="learn"></div>
-<h2>Live bot filters and settings</h2><div class="grid"><div class="sec" id="filt"></div><div class="sec" id="sett"></div><div class="sec" id="lrn"></div></div>
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:10px}
+.stat{background:var(--card2);border-radius:10px;padding:9px 10px}.stat small{display:block;font-size:11px;color:var(--mut)}.stat b{font-size:15px;font-weight:600}
+.sub{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}.sub .t{font-weight:600}
+svg,canvas{width:100%;display:block}
+.ax{display:flex;justify-content:space-between;font-size:11px;color:var(--mut)}
+.coin.live{border:1.5px solid rgba(245,196,81,.6)}
+.ch{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.ch b{font-size:16px}
+.soc{margin-top:8px;padding:8px 10px;background:var(--card2);border-radius:10px;font-size:12.5px}
+.tb{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}
+th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:500;position:sticky;top:0;background:var(--card);cursor:pointer;user-select:none}
+th.on{color:var(--txt)}td:first-child,th:first-child,.l{text-align:left}
+tr.tr{cursor:pointer}tr.tr:hover td{background:#17191d}tr.rl td:first-child{box-shadow:inset 3px 0 var(--real)}
+tr.det td{background:var(--card2);white-space:normal;text-align:left;font-size:12.5px;color:#cfd2d8}
+a{color:var(--acc);text-decoration:none}
+.seg{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0}
+button,.btn{background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font:inherit;font-size:13.5px;cursor:pointer}
+button.on{background:var(--txt);color:#111;border-color:var(--txt)}button.dang{border-color:rgba(248,113,113,.5);color:var(--r)}
+input,select{background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:7px 10px;font:inherit;font-size:14px}
+.bars{display:flex;align-items:flex-end;gap:3px;height:90px;margin-top:10px}.bars div{flex:1;border-radius:3px 3px 0 0;min-height:1px}
+.bl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut);margin-top:3px}
+.fu{animation:fu 1s}.fd{animation:fd 1s}@keyframes fu{0%{background:rgba(52,211,153,.28)}100%{background:transparent}}@keyframes fd{0%{background:rgba(248,113,113,.28)}100%{background:transparent}}
+.n{border-radius:4px;transition:color .3s}
+@media(max-width:600px){.big{font-size:28px}th,td{padding:8px}.hv{gap:12px}.hv b{font-size:14.5px}}
+</style></head><body>
+<div class="w" id="lg" style="max-width:360px;padding-top:90px"><div style="font-size:22px;font-weight:700;margin-bottom:14px">Sol bots</div><input id="pw" type="password" placeholder="Password" autocomplete="current-password" style="width:100%;padding:12px;font-size:16px"><label class="mut" style="display:block;margin:12px 0"><input type="checkbox" id="rem"> Remember on this device</label><button id="go" class="on" style="width:100%;padding:11px">Unlock</button><div id="msg" class="r" style="margin-top:10px"></div></div>
+<div class="w" id="app" style="display:none">
+<header><div class="hd"><div class="hv"><div><small>Real</small><b id="hR">-</b></div><div><small>Paper</small><b id="hP">-</b></div><div><small>SOL</small><b id="hS">-</b></div></div><div class="st"><span id="dot"></span><span id="upd">connecting</span></div></div></header>
+<div class="grid"><div id="real"></div><div id="paper"></div></div>
+<h2>Records</h2><div class="seg" id="sbot"></div><div class="card" id="stats"></div>
+<h2>Equity and drawdown</h2><div class="grid"><div class="card"><div class="mut">Real (live wallet)</div><canvas id="eqR" style="height:150px"></canvas></div><div class="card paper"><div class="mut">Paper (LearnBot + Scalper)</div><canvas id="eqP" style="height:150px"></canvas></div></div>
+<h2>P&amp;L by day and hour</h2><div class="grid"><div class="card" id="byDay"></div><div class="card" id="byHour"></div></div>
+<h2>Controls</h2><div class="card" id="ctl"></div>
+<h2>Open positions</h2><div class="grid" id="coins"></div>
+<h2>Trades</h2><div class="seg" id="flt"></div><div class="seg"><input id="q" placeholder="Search token or reason" style="flex:1;min-width:160px"><span class="mut" id="tc"></span></div>
+<div class="tb" style="max-height:75vh"><table id="trades"></table></div>
+<h2>Main bot filters and learning</h2><div class="grid"><div class="card" id="filt"></div><div class="card" id="sett"></div><div class="card" id="lrn"></div></div>
+<h2>LearnBot learning</h2><div class="card paper" id="learn"></div>
 <h2>Scalper variants</h2><div class="tb"><table id="var"></table></div>
-<p class="mut" style="margin-top:24px"><a href="#" id="out">Lock</a> &nbsp; Encrypted. Prices from DexScreener, sampled about every 3 s, last 2 h. Times Europe/Warsaw. Gold border = real money.</p>
+<p class="mut" style="margin-top:24px"><a href="#" id="out">Lock</a> &middot; Encrypted end to end. Prices from DexScreener, sampled about every 3 s. Times Europe/Warsaw. Gold = real money.</p>
 </div><script>
-let D=null,last=0,FV='';
+let D=null,last=0,FV='',SB='All',SORT={k:'tt',d:-1},OPEN=new Set(),PV={};
 const $=i=>document.getElementById(i);
-const f=(x,d=4)=>x==null?'-':(+x).toFixed(d), pc=x=>x==null?'':x>0?'g':x<0?'r':'';
-const sg=(x,d=4)=>x==null?'-':(x>0?'+':'')+(+x).toFixed(d);
+const f=(x,d=4)=>x==null||isNaN(x)?'-':(+x).toFixed(d),pc=x=>x==null?'':x>0?'g':x<0?'r':'';
+const sg=(x,d=4)=>x==null||isNaN(x)?'-':(x>0?'+':'')+(+x).toFixed(d);
 const px=x=>x==null?'-':(+x).toPrecision(4);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const hm=m=>m==null?'-':m<60?m.toFixed(0)+'m':(m/60).toFixed(1)+'h';
 const tm=t=>new Date(t*1000).toLocaleTimeString('pl-PL',{timeZone:'Europe/Warsaw',hour:'2-digit',minute:'2-digit'});
-function chart(c,base,h=90,fmt=v=>f(v,4)){if(!c||c.length<2)return'<div class="mut" style="margin-top:10px">collecting price history</div>';
-const xs=c.map(p=>p[0]),ys=c.map(p=>p[1]);let x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys,base??ys[0]),y1=Math.max(...ys,base??ys[0]);
-if(y1==y0){y1*=1.001;y0*=.999;if(y1==y0){y1+=1e-9;y0-=1e-9}}const pad=(y1-y0)*.06;y0-=pad;y1+=pad;
-const X=x=>(x-x0)/(x1-x0||1)*300,Y=y=>h-2-(y-y0)/(y1-y0)*(h-4);
-const pts=c.map(p=>X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1)).join(' ');const col=base==null||ys[ys.length-1]>=base?'#3fb950':'#f85149';
-const bl=base!=null?`<line x1="0" x2="300" y1="${Y(base).toFixed(1)}" y2="${Y(base).toFixed(1)}" stroke="#8a8d94" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>`:'';
-return`<svg viewBox="0 0 300 ${h}" preserveAspectRatio="none" style="height:${h}px">${bl}<polyline fill="none" stroke="${col}" stroke-width="2" points="${pts}" vector-effect="non-scaling-stroke"/></svg><div class="ax"><span>${tm(x0)}</span><span>${fmt(y0+pad)} to ${fmt(y1-pad)}</span><span>${tm(x1)}</span></div>`}
+const hr=t=>+new Date(t*1000).toLocaleString('en-GB',{timeZone:'Europe/Warsaw',hour:'2-digit',hour12:false})%24;
+const dy=t=>new Date(t*1000).toLocaleDateString('pl-PL',{timeZone:'Europe/Warsaw',day:'2-digit',month:'2-digit'});
 const mc=x=>x==null?'-':'$'+(x>=1e9?(x/1e9).toFixed(2)+'B':x>=1e6?(x/1e6).toFixed(2)+'M':x>=1e3?(x/1e3).toFixed(1)+'k':Math.round(x));
-function drawCandles(){document.querySelectorAll('canvas[data-i]').forEach(cv=>{const o=D.open[+cv.dataset.i];if(!o)return;const c=o.cd||[];const W=cv.clientWidth||300,H=120,dpr=window.devicePixelRatio||1;
-cv.width=W*dpr;cv.height=H*dpr;const g=cv.getContext('2d');g.scale(dpr,dpr);g.font='11px system-ui';g.fillStyle='#8a8d94';
+// animated numbers: N(key,value,formatter,signClass)
+const FM={s4:v=>f(v,4),sg4:v=>sg(v,4),sg5:v=>sg(v,5),u2:v=>'$'+f(v,2),sgu:v=>sg(v,2)+' USD',p1:v=>sg(v,1)+'%',s4u:v=>f(v,4)+' SOL'};
+const N=(k,v,fm,cls)=>`<span class="n ${cls?pc(v):''}" data-k="${k}" data-v="${v??''}" data-f="${fm}">${v==null?'-':FM[fm](v)}</span>`;
+function animate(){document.querySelectorAll('.n[data-k]').forEach(el=>{const k=el.dataset.k,v=parseFloat(el.dataset.v),p=PV[k];PV[k]=v;if(isNaN(v)||p==null||isNaN(p)||p===v)return;
+el.classList.add(v>p?'fu':'fd');const fm=FM[el.dataset.f],t0=performance.now();const step=t=>{const a=Math.min(1,(t-t0)/450),e=1-Math.pow(1-a,3);el.textContent=fm(p+(v-p)*e);if(a<1)requestAnimationFrame(step)};
+if(typeof requestAnimationFrame!=='undefined')requestAnimationFrame(step)})}
+function chart(c,base,h=70){if(!c||c.length<2)return'<div class="mut" style="margin-top:10px">collecting history</div>';
+const xs=c.map(p=>p[0]),ys=c.map(p=>p[1]);let x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys,base??ys[0]),y1=Math.max(...ys,base??ys[0]);
+if(y1==y0){y1+=1e-9;y0-=1e-9}const pad=(y1-y0)*.06;y0-=pad;y1+=pad;const X=x=>(x-x0)/(x1-x0||1)*300,Y=y=>h-2-(y-y0)/(y1-y0)*(h-4);
+const pts=c.map(p=>X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1)).join(' ');const col=base==null||ys[ys.length-1]>=base?'#34d399':'#f87171';
+const bl=base!=null?`<line x1="0" x2="300" y1="${Y(base).toFixed(1)}" y2="${Y(base).toFixed(1)}" stroke="#555a63" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>`:'';
+return`<svg viewBox="0 0 300 ${h}" preserveAspectRatio="none" style="height:${h}px;margin-top:10px">${bl}<polyline fill="none" stroke="${col}" stroke-width="1.8" points="${pts}" vector-effect="non-scaling-stroke"/></svg>`}
+function cv(el,H){const W=el.clientWidth||320,dpr=(typeof window!=='undefined'&&window.devicePixelRatio)||1;el.width=W*dpr;el.height=H*dpr;const g=el.getContext('2d');g.scale(dpr,dpr);g.font='11px system-ui';return[g,W]}
+function eqdd(el,c,base){if(!el)return;const H=150,[g,W]=cv(el,H);g.fillStyle='#8b8f98';if(!c||c.length<2){g.fillText('collecting history',4,16);return}
+let pk=-1e9;const dd=c.map(p=>{pk=Math.max(pk,p[1]);return pk>0?(p[1]-pk)/pk:0});const mdd=Math.min(...dd);
+const x0=c[0][0],x1=c[c.length-1][0],X=t=>(t-x0)/(x1-x0||1)*W;const ys=c.map(p=>p[1]);let y0=Math.min(...ys,base),y1=Math.max(...ys,base);if(y1==y0){y1+=1e-6;y0-=1e-6}
+const eh=H*.68,Y=v=>6+(1-(v-y0)/(y1-y0))*(eh-12),dh=H-eh-16,DY=v=>eh+2+(mdd<0?v/mdd:0)*dh;
+g.strokeStyle='#555a63';g.setLineDash([4,4]);g.beginPath();g.moveTo(0,Y(base));g.lineTo(W,Y(base));g.stroke();g.setLineDash([]);
+g.strokeStyle=ys[ys.length-1]>=base?'#34d399':'#f87171';g.lineWidth=1.8;g.beginPath();c.forEach((p,i)=>i?g.lineTo(X(p[0]),Y(p[1])):g.moveTo(X(p[0]),Y(p[1])));g.stroke();
+g.fillStyle='rgba(248,113,113,.35)';g.beginPath();g.moveTo(0,eh+2);c.forEach((p,i)=>g.lineTo(X(p[0]),DY(dd[i])));g.lineTo(W,eh+2);g.closePath();g.fill();
+g.fillStyle='#8b8f98';g.fillText(tm(x0),2,H-2);const e=tm(x1);g.fillText(e,W-g.measureText(e).width-2,H-2);const m='max drawdown '+(mdd*100).toFixed(1)+'%';g.fillText(m,(W-g.measureText(m).width)/2,H-2)}
+function drawCandles(){document.querySelectorAll('canvas[data-i]').forEach(el=>{const o=D.open[+el.dataset.i];if(!o)return;const c=o.cd||[];const H=120,[g,W]=cv(el,H);g.fillStyle='#8b8f98';
 if(c.length<2){g.fillText('collecting candles',4,16);return}
-const lv=[];if(o.entry)lv.push([o.entry,'#8a8d94']);if(o.entry&&o.tp!=null)lv.push([o.entry*(1+o.tp),'#3fb950']);if(o.entry&&o.sl!=null)lv.push([o.entry*(1+o.sl),'#f85149']);
+const lv=[];if(o.entry)lv.push([o.entry,'#6b7078']);if(o.entry&&o.tp!=null)lv.push([o.entry*(1+o.tp),'#34d399']);if(o.entry&&o.sl!=null)lv.push([o.entry*(1+o.sl),'#f87171']);
 let y0=Math.min(...c.map(b=>b[3]),...lv.map(l=>l[0])),y1=Math.max(...c.map(b=>b[2]),...lv.map(l=>l[0]));if(y1==y0){y1*=1.001;y0*=.999}const pd=(y1-y0)*.06;y0-=pd;y1+=pd;
 const Y=v=>H-14-(v-y0)/(y1-y0)*(H-18),n=c.length,bw=W/n;
 lv.forEach(([v,col])=>{g.strokeStyle=col;g.setLineDash([4,4]);g.lineWidth=1;g.beginPath();g.moveTo(0,Y(v));g.lineTo(W,Y(v));g.stroke()});g.setLineDash([]);
-c.forEach((b,i)=>{const[t,op,hi,lo,cl]=b,x=i*bw+bw/2,col=cl>=op?'#3fb950':'#f85149';g.strokeStyle=g.fillStyle=col;g.beginPath();g.moveTo(x,Y(hi));g.lineTo(x,Y(lo));g.stroke();
+c.forEach((b,i)=>{const[t,op,hi,lo,cl]=b,x=i*bw+bw/2,col=cl>=op?'#34d399':'#f87171';g.strokeStyle=g.fillStyle=col;g.beginPath();g.moveTo(x,Y(hi));g.lineTo(x,Y(lo));g.stroke();
 const top=Y(Math.max(op,cl)),h=Math.max(1,Math.abs(Y(op)-Y(cl)));g.fillRect(x-Math.max(1,bw*.35),top,Math.max(2,bw*.7),h)});
-g.fillStyle='#8a8d94';g.fillText(tm(c[0][0]),2,H-2);const e=tm(c[n-1][0]);g.fillText(e,W-g.measureText(e).width-2,H-2);})}
-function render(){const d=D,R=d.real,P=d.paper,B=d.bots;
-$('tot').textContent='SOL $'+f(d.solUsd,2);
-$('real').innerHTML=`<div class="sec real"><span class="tag">REAL MONEY</span> <span class="mut">live wallet, on-chain</span>
-<div class="big">${f(R.equity,4)} SOL</div><div class="pn ${pc(R.pnl)}">${sg(R.pnl,4)} SOL &nbsp; ${sg(R.pnlUsd,2)} USD &nbsp; ${sg(R.pct,1)}%</div>
-<div class="kv"><span>Wallet SOL</span><span>${f(R.walletSol,4)}</span><span>Open position value</span><span>${f(R.posValue,4)} SOL</span><span>Total in USD</span><span>$${f(R.usd,2)}</span><span>Started with</span><span>${R.start} SOL</span><span>Win rate</span><span>${B[0].winRate==null?'-':B[0].winRate+'%'} (${B[0].wins}/${B[0].closed})</span><span>Realized</span><span class="${pc(B[0].realized)}">${sg(B[0].realized,4)} SOL</span></div>
-${chart(B[0].curve,R.start,110)}</div>`;
+g.fillStyle='#8b8f98';g.fillText(tm(c[0][0]),2,H-2);const e=tm(c[n-1][0]);g.fillText(e,W-g.measureText(e).width-2,H-2)})}
+function stats(T,su){const c=T.filter(t=>t.sol!=null).sort((a,b)=>a.tt-b.tt);const w=c.filter(t=>t.sol>0),l=c.filter(t=>t.sol<=0);
+const sum=a=>a.reduce((s,t)=>s+t.sol,0),gw=sum(w),gl=-sum(l);let st=0;for(let i=c.length-1;i>=0;i--){const s=c[i].sol>0?1:-1;if(!st||Math.sign(st)==s)st+=s;else break}
+const H={};c.forEach(t=>{const h=hr(t.tt);H[h]=(H[h]||0)+t.sol});const bh=Object.entries(H).sort((a,b)=>b[1]-a[1])[0];
+const by=k=>c.length?c.reduce((a,b)=>b[k]>a[k]?b:a):null,wy=k=>c.length?c.reduce((a,b)=>b[k]<a[k]?b:a):null;
+return{n:c.length,all:T.length,wr:c.length?w.length/c.length*100:null,aw:w.length?gw/w.length:null,al:l.length?-gl/l.length:null,pf:gl>0?gw/gl:(gw>0?Infinity:null),st,
+vol:T.reduce((s,t)=>s+(t.size||0),0)+c.reduce((s,t)=>s+(t.size||0)+(t.sol||0),0),hold:c.length?c.reduce((s,t)=>s+(t.hold||0),0)/c.length:null,pnl:sum(c),
+best:by('sol'),bestp:by('pct'),worst:wy('sol'),bh:bh?[+bh[0],bh[1]]:null,su}}
+function renderStats(){const d=D,su=d.solUsd,T=d.trades.filter(t=>SB=='All'||t.bot==SB);const s=stats(T,su);const k=SB;
+const tk=t=>t?`${esc(t.tok)} <span class="${pc(t.sol)}">${sg(t.sol,4)} SOL / ${sg(t.sol*su,2)} USD / ${sg(t.pct,1)}%</span>`:'-';
+$('sbot').innerHTML=['All','Main','LearnBot','Scalper'].map(b=>`<button class="${SB==b?'on':''}" data-sb="${b}">${b=='Main'?'Real':b}</button>`).join('');
+$('stats').innerHTML=`<div class="g2">
+<div class="stat"><small>Realized P&amp;L</small><b>${N('s'+k+'p',s.pnl,'sg4',1)} SOL</b><div class="mut">${N('s'+k+'u',s.pnl*su,'sgu',1)}</div></div>
+<div class="stat"><small>Win rate</small><b>${s.wr==null?'-':s.wr.toFixed(0)+'%'}</b><div class="mut">${s.n} closed / ${s.all} rows</div></div>
+<div class="stat"><small>Profit factor</small><b>${s.pf==null?'-':s.pf===Infinity?'no losses':s.pf.toFixed(2)}</b></div>
+<div class="stat"><small>Avg win / loss</small><b><span class="g">${sg(s.aw,4)}</span> / <span class="r">${sg(s.al,4)}</span></b></div>
+<div class="stat"><small>Current streak</small><b class="${s.st>0?'g':s.st<0?'r':''}">${s.st?Math.abs(s.st)+(s.st>0?' wins':' losses'):'-'}</b></div>
+<div class="stat"><small>Volume traded</small><b>${f(s.vol,3)} SOL</b><div class="mut">$${f(s.vol*su,0)}</div></div>
+<div class="stat"><small>Avg hold</small><b>${hm(s.hold)}</b></div>
+<div class="stat"><small>Best hour</small><b>${s.bh?String(s.bh[0]).padStart(2,'0')+':00':'-'}</b><div class="mut">${s.bh?sg(s.bh[1],4)+' SOL':''}</div></div></div>
+<div class="kv"><span>Best trade (SOL)</span><span>${tk(s.best)}</span><span>Best trade (%)</span><span>${tk(s.bestp)}</span><span>Worst trade</span><span>${tk(s.worst)}</span></div>`;
+const c=T.filter(t=>t.sol!=null),DD={},HH={};c.forEach(t=>{DD[dy(t.tt)]=(DD[dy(t.tt)]||0)+t.sol;const h=hr(t.tt);HH[h]=(HH[h]||0)+t.sol});
+const bars=(E,lab)=>{if(!E.length)return'<div class="mut" style="margin-top:8px">not enough closed trades yet</div>';const m=Math.max(...E.map(e=>Math.abs(e[1])))||1;
+return`<div class="bars">${E.map(e=>`<div title="${e[0]}: ${sg(e[1],4)} SOL" style="height:${Math.max(2,Math.abs(e[1])/m*100)}%;background:${e[1]>=0?'var(--g)':'var(--r)'};opacity:.85"></div>`).join('')}</div><div class="bl"><span>${lab(E[0][0])}</span><span>${lab(E[E.length-1][0])}</span></div>`};
+const de=Object.entries(DD).slice(-14);$('byDay').innerHTML='<div class="mut">By day ('+(SB=='All'?'all bots':SB)+')</div>'+bars(de,x=>x);
+const he=Array.from({length:24},(_,h)=>[h,HH[h]||0]);$('byHour').innerHTML='<div class="mut">By hour of day</div>'+(c.length?bars(he,x=>String(x).padStart(2,'0')+':00'):bars([],x=>x));}
+function socH(s,full){if(!s)return full?'<div class="soc mut">Background: not scanned yet</div>':'';
+const x=s.x?`<a href="${esc(s.x)}" target="_blank" rel="noopener">${s.ta?'@'+esc(s.ta)+' post':esc(s.x.replace(/^https?:\/\/(www\.)?/,''))}</a>`:'<span class="r">no X</span>';
+const p=[x,s.site?`<a href="${esc(s.site)}" target="_blank" rel="noopener">site</a>`:'',s.tg?`<a href="${esc(s.tg)}" target="_blank" rel="noopener">telegram</a>`:''].filter(Boolean).join(' &middot; ');
+if(!full)return p+` <span class="mut">score ${s.sc??'-'}/3</span>`;
+return`<div class="soc"><div>${p} <span class="mut">&middot; social score ${s.sc??'-'}/3</span></div>${s.ta?`<div class="mut">Post by @${esc(s.ta)}${s.tv?' (verified)':''}${s.tl!=null?', '+s.tl+' likes':''}${s.big&&s.big.length?', <b style="color:var(--real)">big account: '+esc(s.big.join(', '))+'</b>':''}</div>`:''}${s.tt?`<div style="margin-top:3px">"${esc(s.tt)}"</div>`:''}${s.desc?`<div class="mut" style="margin-top:3px">${esc(s.desc)}</div>`:''}${s.kw&&s.kw.length?`<div class="mut">narrative: ${esc(s.kw.join(', '))}</div>`:''}</div>`}
+function renderTrades(){const d=D,q=($('q').value||'').toLowerCase();
+$('flt').innerHTML=[['','All'],['Main','Real'],['LearnBot','LearnBot'],['Scalper','Scalper']].map(([v,n])=>`<button data-v="${v}" class="${FV==v?'on':''}">${n}</button>`).join('');
+let T=d.trades.filter(t=>(!FV||t.bot==FV)&&(!q||(t.tok+' '+t.reason+' '+(t.var||'')).toLowerCase().includes(q)));
+T=T.slice().sort((a,b)=>{const x=a[SORT.k],y=b[SORT.k];return (x==null?-1e18:typeof x=='string'?0:x)<(y==null?-1e18:typeof y=='string'?0:y)?-SORT.d:SORT.d});
+if(['tok','bot','side'].includes(SORT.k))T.sort((a,b)=>String(a[SORT.k]).localeCompare(String(b[SORT.k]))*SORT.d);
+$('tc').textContent=T.length+' trades, tap a row for details';
+const H=[['tt','Time'],['bot','Bot'],['tok','Token'],['side','Side'],['pct','P&L %'],['sol','P&L SOL'],['size','Size'],['hold','Hold']];
+$('trades').innerHTML='<tr>'+H.map(([k,n],i)=>`<th data-s="${k}" class="${i>0&&i<4?'l ':''}${SORT.k==k?'on':''}">${n}${SORT.k==k?(SORT.d>0?' (asc)':' (desc)'):''}</th>`).join('')+'</tr>'+
+T.slice(0,400).map(t=>{const id=t.bot+t.mint+t.tt;return`<tr class="tr ${t.bot=='Main'?'rl':''}" data-id="${esc(id)}"><td>${t.t}</td><td class="l">${t.bot=='Main'?'<b style="color:var(--real)">REAL</b>':t.bot}${t.var?' <span class="mut">'+esc(t.var)+'</span>':''}</td><td class="l">${esc(t.tok)}</td><td class="l">${t.side}</td><td class="${pc(t.pct)}">${t.pct==null?'-':sg(t.pct,1)+'%'}</td><td class="${pc(t.sol)}">${sg(t.sol,5)}</td><td>${f(t.size,4)}</td><td>${hm(t.hold)}</td></tr>`+
+(OPEN.has(id)?`<tr class="det"><td colspan="8"><div class="kv" style="margin:0;max-width:520px"><span>Entry / exit $</span><span>${px(t.entry)} / ${px(t.exit)}</span><span>P&amp;L USD</span><span class="${pc(t.sol)}">${t.sol==null?'-':sg(t.sol*d.solUsd,2)}</span><span>Reason</span><span>${esc(t.reason)}</span><span>Background</span><span>${socH(t.soc,false)||'-'}</span><span>Links</span><span><a href="https://dexscreener.com/solana/${t.mint}" target="_blank">DexScreener</a> &middot; <a href="https://solscan.io/token/${t.mint}" target="_blank">Solscan</a>${t.tx?` &middot; <a href="https://solscan.io/tx/${t.tx}" target="_blank">tx</a>`:''}</span></div></td></tr>`:'')}).join('')}
+function render(){const d=D,R=d.real,P=d.paper,B=d.bots,su=d.solUsd;
+$('hR').innerHTML=N('hR',R.equity,'s4u')+` <span class="${pc(R.pnl)}" style="font-size:12px">${sg(R.pct,1)}%</span>`;$('hP').innerHTML=N('hP',P.equity,'s4u');$('hS').innerHTML=N('hS',su,'u2');
+$('real').innerHTML=`<div class="card real"><span class="tag">REAL MONEY</span> <span class="mut">live wallet, on-chain</span>
+<div class="big">${N('re',R.equity,'s4')} SOL</div><div class="pn">${N('rp',R.pnl,'sg4',1)} SOL &nbsp; ${N('ru',R.pnlUsd,'sgu',1)} &nbsp; <span class="${pc(R.pct)}">${sg(R.pct,1)}%</span></div>
+<div class="kv"><span>Wallet SOL</span><span>${N('rw',R.walletSol,'s4')}</span><span>Open positions</span><span>${N('rv',R.posValue,'s4')} SOL</span><span>Total USD</span><span>${N('rusd',R.usd,'u2')}</span><span>Started with</span><span>${R.start} SOL</span><span>Win rate</span><span>${B[0].winRate==null?'-':B[0].winRate+'%'} (${B[0].wins}/${B[0].closed})</span></div>${chart(B[0].curve,R.start,80)}</div>`;
 const L=B[1],S=B[2];
-$('paper').innerHTML=`<div class="sec paper"><span class="tag">PAPER, NOT REAL</span> <span class="mut">simulated, no money at risk</span>
-<div class="big" style="color:#b5b8bf">${f(P.equity,4)} SOL</div><div class="pn ${pc(P.pnl)}">${sg(P.pnl,4)} SOL simulated</div>
-${chart(P.curve,P.start,80)}
-<div class="sub"><div class="t">LearnBot</div><div class="kv"><span>Equity</span><span>${f(L.equity,4)} SOL</span><span>Cash</span><span>${f(P.learnCash,4)} SOL</span><span>P&amp;L vs ${L.start}</span><span class="${pc(L.pnl)}">${sg(L.pnl,4)} (${sg(L.pct,1)}%)</span><span>Win rate</span><span>${L.winRate==null?'-':L.winRate+'%'} (${L.wins}/${L.closed})</span><span>Open</span><span>${L.openN}</span></div>${chart(L.curve,L.start,60)}</div>
-<div class="sub"><div class="t">Scalper</div><div class="kv"><span>Equity</span><span>${f(S.equity,4)} SOL</span><span>Cash</span><span>${f(S.cash,4)} SOL</span><span>P&amp;L vs ${f(S.start,2)}</span><span class="${pc(S.pnl)}">${sg(S.pnl,4)} (${sg(S.pct,1)}%)</span><span>Per trade / max open</span><span>${S.size} SOL / ${S.maxOpen}</span><span>Win rate</span><span>${S.winRate==null?'-':S.winRate+'%'} (${S.wins}/${S.closed})</span><span>Open</span><span>${S.openN}</span></div>${chart(S.curve,S.start,60)}</div></div>`;
-$('coins').innerHTML=d.open.map(o=>{const ph=o.ph||[];const c=ph.slice();if(o.cur&&c.length&&c[c.length-1][0]<d.serverTime-5)c.push([d.serverTime,o.cur]);
-return`<div class="coin${o.live?' live':''}"><div class="ch"><b>${esc(o.tok)}</b><span class="mut">${o.live?'<b style="color:var(--real)">REAL</b> ':'paper '}${esc(o.bot)}</span></div>
-<div class="ch"><span class="pn ${pc(o.pct)}">${o.pct==null?'-':sg(o.pct,1)+'%'}</span><span class="${pc(o.upnl)}">${o.upnl==null?'':sg(o.upnl,4)+' SOL'}</span></div>
-<div class="kv"><span>Entry${o.entryApprox?' (approx)':''}</span><span>$${px(o.entry)}</span><span>Now</span><span>$${px(o.cur)}</span><span>Size / held</span><span>${f(o.size,4)} SOL / ${hm(o.hold)}</span></div>
-<div class="kv"><span>Entry mcap</span><span>${mc(o.emcap)}</span><span>Now mcap</span><span>${mc(o.mcap)}</span><span class="g">TP at</span><span>${o.tp==null?'none':mc(o.tpMcap)+' ('+sg(o.tp*100,0)+'%)'}</span><span class="r">SL at</span><span>${o.sl==null?'-':mc(o.slMcap)+' ('+sg(o.sl*100,0)+'%)'}</span></div><div class="mut" style="margin-top:4px">${esc(o.exitNote||'')}</div><canvas data-i="${d.open.indexOf(o)}" style="width:100%;height:120px;display:block;margin-top:10px"></canvas><div class="mut" style="margin-top:6px">1m candles, dashed: grey entry, green TP, red SL &nbsp; <a href="https://dexscreener.com/solana/${o.mint}" target="_blank">DexScreener</a> &nbsp; <a href="https://solscan.io/token/${o.mint}" target="_blank">Solscan</a></div><div class="seg" style="margin-top:8px"><button data-close="${o.bot}|${o.mint}|${esc(o.tok)}|${o.live?1:0}">Close</button></div></div>`}).join('')||'<div class="mut">No coins held right now</div>';
-drawCandles();$('flt').innerHTML=[['','All'],['Main','Real'],['LearnBot','LearnBot'],['Scalper','Scalper']].map(([v,n])=>`<button data-v="${v}" class="${FV==v?'on':''}">${n}</button>`).join('')+`<span class="mut" id="tc"></span>`;
-const T=d.trades.filter(t=>!FV||t.bot==FV);$('tc').textContent=T.length+' trades';
-$('trades').innerHTML='<tr><th>Time</th><th class="l">Bot</th><th class="l">Token</th><th class="l">Side</th><th>P&amp;L %</th><th>P&amp;L SOL</th><th>Size</th><th>Entry $</th><th>Exit $</th><th>Hold</th><th class="l">Reason</th><th class="l">Tx</th></tr>'+
-T.map(t=>`<tr class="${t.bot=='Main'?'rl':''}"><td>${t.t}</td><td class="l">${t.bot=='Main'?'<b style="color:var(--real)">REAL</b>':t.bot}${t.var?' '+esc(t.var):''}</td><td class="l"><a href="https://dexscreener.com/solana/${t.mint}" target="_blank">${esc(t.tok)}</a></td><td class="l">${t.side}</td><td class="${pc(t.pct)}">${t.pct==null?'-':sg(t.pct,1)+'%'}</td><td class="${pc(t.sol)}">${sg(t.sol,5)}</td><td>${f(t.size,4)}</td><td>${px(t.entry)}</td><td>${px(t.exit)}</td><td>${hm(t.hold)}</td><td class="l mut">${esc(t.reason)}</td><td class="l">${t.tx?`<a href="https://solscan.io/tx/${t.tx}" target="_blank">tx</a>`:''}</td></tr>`).join('');
+$('paper').innerHTML=`<div class="card paper"><span class="tag">PAPER, NOT REAL</span> <span class="mut">simulated</span>
+<div class="big" style="color:#c3c6cc">${N('pe',P.equity,'s4')} SOL</div><div class="pn">${N('pp',P.pnl,'sg4',1)} SOL &nbsp; ${N('pu',P.pnlUsd,'sgu',1)} simulated</div>
+<div class="sub"><div class="t">LearnBot</div><div class="kv"><span>Equity / cash</span><span>${N('le',L.equity,'s4')} / ${f(P.learnCash,4)}</span><span>P&amp;L vs ${f(L.start,2)}</span><span class="${pc(L.pnl)}">${sg(L.pnl,4)} (${sg(L.pct,1)}%)</span><span>Win rate / open</span><span>${L.winRate==null?'-':L.winRate+'%'} (${L.wins}/${L.closed}) / ${L.openN}</span></div>${chart(L.curve,L.start,50)}</div>
+<div class="sub"><div class="t">Scalper</div><div class="kv"><span>Equity / cash</span><span>${N('se',S.equity,'s4')} / ${f(S.cash,4)}</span><span>P&amp;L vs ${f(S.start,2)}</span><span class="${pc(S.pnl)}">${sg(S.pnl,4)} (${sg(S.pct,1)}%)</span><span>Win rate / open</span><span>${S.winRate==null?'-':S.winRate+'%'} (${S.wins}/${S.closed}) / ${S.openN} of ${S.maxOpen}, ${S.size} SOL each</span></div>${chart(S.curve,S.start,50)}</div></div>`;
+renderStats();eqdd($('eqR'),B[0].curve,R.start);eqdd($('eqP'),P.curve,P.start);
+$('coins').innerHTML=d.open.map((o,i)=>`<div class="card coin${o.live?' live':''}"><div class="ch"><b>${esc(o.tok)}</b><span class="mut">${o.live?'<b style="color:var(--real)">REAL</b> ':'paper '}${esc(o.bot)}</span></div>
+<div class="ch" style="margin-top:2px"><span class="pn">${N('op'+o.bot+o.mint,o.pct,'p1',1)}</span><span>${o.upnl==null?'':N('ou'+o.bot+o.mint,o.upnl,'sg4',1)+' SOL'}</span></div>
+<div class="kv"><span>Entry${o.entryApprox?' (approx)':''} / now</span><span>$${px(o.entry)} / $${px(o.cur)}</span><span>Size / held</span><span>${f(o.size,4)} SOL / ${hm(o.hold)}</span><span>Entry mcap / now</span><span>${mc(o.emcap)} / ${mc(o.mcap)}</span><span class="g">TP at</span><span>${o.tp==null?'none':mc(o.tpMcap)+' ('+sg(o.tp*100,0)+'%)'}</span><span class="r">SL at</span><span>${o.sl==null?'-':mc(o.slMcap)+' ('+sg(o.sl*100,0)+'%)'}</span></div>
+<div class="mut" style="margin-top:4px">${esc(o.exitNote||'')}</div>${socH(o.soc,true)}
+<canvas data-i="${i}" style="height:120px;margin-top:10px"></canvas><div class="mut" style="margin-top:4px">1m candles. Dashed: grey entry, green TP, red SL.</div>
+<div class="seg" style="margin-bottom:0"><a class="btn" href="https://dexscreener.com/solana/${o.mint}" target="_blank">DexScreener</a><button class="${o.live?'dang':''}" data-close="${esc(o.bot)}|${o.mint}|${esc(o.tok)}|${o.live?1:0}">Close</button></div></div>`).join('')||'<div class="mut">No open positions</div>';
+drawCandles();renderTrades();
 const Ln=d.learn;$('learn').innerHTML=`<div class="kv"><span>Exploration</span><span>${Ln.exploration??'-'}</span><span>Avg reward</span><span class="${pc(Ln.avgReward)}">${Ln.avgReward??'-'}</span><span>Episodes / wins</span><span>${Ln.episodes} / ${Ln.wins}</span><span>Steps</span><span>${Ln.steps}</span></div>
-<details><summary>Rules learned</summary><div class="mut" style="margin-top:8px">Best</div><ul>${Ln.best.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul><div class="mut">Worst</div><ul>${Ln.worst.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul><div class="mut">Exit</div><ul>${Ln.exitRules.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></details>`;
+<details><summary class="mut" style="margin-top:8px;cursor:pointer">Rules learned</summary><div class="mut" style="margin-top:8px">Best</div><ul>${Ln.best.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul><div class="mut">Worst</div><ul>${Ln.worst.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul><div class="mut">Exit</div><ul>${Ln.exitRules.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></details>`;
 const F=d.main.filters,tot=Object.values(F).reduce((a,b)=>a+b,0)||1;
 $('filt').innerHTML='<b>Rejections (current run)</b><div class="kv">'+Object.entries(F).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${esc(k)}</span><span>${v} (${(v/tot*100).toFixed(0)}%)</span>`).join('')+`</div><div class="mut" style="margin-top:6px">last log ${esc(d.main.lastLog)}</div>`;
-const LJ=d.main.learned||{},E=LJ.effective||{},BS=LJ.base||{};$('lrn').innerHTML='<b>Learned thresholds (main bot)</b><div class="kv">'+Object.entries(E).map(([k,v])=>`<span>${esc(k)}</span><span>${esc(v)}${BS[k]!=null&&BS[k]!=v?' (base '+esc(BS[k])+')':''}</span>`).join('')+`<span>Blocked rug flags</span><span>${esc((LJ.badFlags||[]).join(', ')||'none')}</span><span>Closed trades learned from</span><span>${LJ.samples??0}</span><span>Stopped-out mints blocked 24h</span><span>${LJ.stoppedBlocked??0}</span></div>`;
 $('sett').innerHTML='<b>Settings</b><div class="kv">'+Object.entries(d.main.settings).map(([k,v])=>`<span>${esc(k)}</span><span>${esc(v)}</span>`).join('')+`</div><div class="mut" style="margin-top:6px"><a href="https://solscan.io/account/${d.main.wallet}" target="_blank">Wallet on Solscan</a></div>`;
-$('var').innerHTML='<tr><th>Variant</th><th>Closed</th><th>Wins</th><th>Win %</th><th>Net SOL</th><th>Open</th></tr>'+d.scalp.variants.map(v=>`<tr><td>${esc(v.name)}</td><td>${v.trades}</td><td>${v.wins}</td><td>${v.trades?(v.wins/v.trades*100).toFixed(0)+'%':'-'}</td><td class="${pc(v.net)}">${sg(v.net,5)}</td><td>${v.open}</td></tr>`).join('');}
-$('flt').onclick=e=>{if(e.target.dataset.v!=null){FV=e.target.dataset.v;D&&render()}};
-setInterval(()=>{if(!last)return;const s=Math.max(0,Math.round(Date.now()/1000-last));$('upd').textContent='updated '+s+'s ago';$('dot').style.background=s<15?'#3fb950':'#f85149'},500);
-const SALT='b058d9955cee46cd3966dd1dd86051cd';const [TOPIC,CTOPIC]=location.hash.slice(1).split('.');let KEY=null,lastId='',RES=[];
+const LJ=d.main.learned||{},E=LJ.effective||{},BS=LJ.base||{};$('lrn').innerHTML='<b>Learned thresholds</b><div class="kv">'+Object.entries(E).map(([k,v])=>`<span>${esc(k)}</span><span>${esc(v)}${BS[k]!=null&&BS[k]!=v?' (base '+esc(BS[k])+')':''}</span>`).join('')+`<span>Blocked rug flags</span><span>${esc((LJ.badFlags||[]).join(', ')||'none')}</span><span>Trades learned from</span><span>${LJ.samples??0}</span></div>`;
+$('var').innerHTML='<tr><th>Variant</th><th>Closed</th><th>Wins</th><th>Win %</th><th>Net SOL</th><th>Open</th></tr>'+d.scalp.variants.map(v=>`<tr><td>${esc(v.name)}</td><td>${v.trades}</td><td>${v.wins}</td><td>${v.trades?(v.wins/v.trades*100).toFixed(0)+'%':'-'}</td><td class="${pc(v.net)}">${sg(v.net,5)}</td><td>${v.open}</td></tr>`).join('');
+animate()}
+$('flt').onclick=e=>{const v=e.target.dataset&&e.target.dataset.v;if(v!=null){FV=v;renderTrades()}};
+$('sbot').onclick=e=>{const v=e.target.dataset&&e.target.dataset.sb;if(v){SB=v;renderStats();animate()}};
+$('q').oninput=()=>D&&renderTrades();
+$('trades').onclick=e=>{const th=e.target.closest('th');if(th){const k=th.dataset.s;SORT=SORT.k==k?{k,d:-SORT.d}:{k,d:-1};return renderTrades()}const tr=e.target.closest('tr.tr');if(tr&&!e.target.closest('a')){const id=tr.dataset.id;OPEN.has(id)?OPEN.delete(id):OPEN.add(id);renderTrades()}};
+setInterval(()=>{if(!last)return;const s=Math.max(0,Math.round(Date.now()/1000-last));$('upd').textContent=s<3?'live':'updated '+s+'s ago';$('dot').style.background=s<15?'#34d399':s<60?'#f5c451':'#f87171'},500);
+let RES=[];
+function showRes(){const e=$('res');if(e)e.innerHTML=RES.map(r=>`<div class="${r.ok?'g':'r'}">${tm(r.t)} ${esc(r.msg)}</div>`).join('')||'<span class="mut">No commands yet</span>'}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-close]');if(!b)return;const [bot,mint,tok,live]=b.dataset.close.split('|');
+if(confirm((live==='1'?'REAL MONEY: sell ':'Paper: close ')+tok+' on '+bot+'?'))cmd('close',{bot,mint})});
+function ctrl(){$('ctl').innerHTML=`<div class="seg"><button onclick="cmd('ping',{})">Ping box</button></div>
+<div class="seg">${['Main','LearnBot','Scalper'].map(b=>`<button onclick="confirm('Pause ${b}?')&&cmd('pause',{bot:'${b}'})">Pause ${b}</button><button onclick="cmd('resume',{bot:'${b}'})">Resume ${b}</button>`).join('')}</div>
+<div class="mut" style="margin-top:6px">Move paper SOL</div><div class="seg"><select id="xf"><option value="LearnBot|Scalper">LearnBot to Scalper</option><option value="Scalper|LearnBot">Scalper to LearnBot</option></select>
+<input id="xa" type="number" step="0.01" min="0" placeholder="SOL" style="width:90px"><button onclick="xfer()">Move</button></div>
+<div class="mut">Move real SOL: no live bots yet</div><div id="res" style="margin-top:8px;font-size:13px"></div>`;showRes()}
+function xfer(){const [from,to]=$('xf').value.split('|'),amount=+$('xa').value;if(!(amount>0))return;if(confirm('Move '+amount+' paper SOL from '+from+' to '+to+'?'))cmd('transfer_paper',{from,to,amount})}
+const SALT='b058d9955cee46cd3966dd1dd86051cd';const [TOPIC,CTOPIC]=location.hash.slice(1).split('.');let KEY=null,lastId='';
 const b64=u=>btoa(String.fromCharCode(...new Uint8Array(u))),unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 const hex=h=>new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));
 async function derive(pw){const m=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -115,9 +193,8 @@ async function gunzip(b){return new Response(new Blob([b]).stream().pipeThrough(
 async function gzip(t){return new Uint8Array(await new Response(new Blob([t]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer())}
 async function dec(buf){buf=new Uint8Array(buf);const p=await crypto.subtle.decrypt({name:'AES-GCM',iv:buf.slice(0,12),additionalData:new TextEncoder().encode('data')},KEY,buf.slice(12));return JSON.parse(await gunzip(p))}
 async function openMsg(m){if(m.event!=='message')return null;if(m.attachment){const r=await fetch(m.attachment.url,{cache:'no-store'});return dec(await r.arrayBuffer())}return dec(unb64(m.message))}
-function apply(j){if(j.k==='full'){D=j}else if(j.k==='live'&&D){const ph={},cd={};D.open.forEach(o=>{ph[o.mint]=o.ph;cd[o.mint]=o.cd});D.serverTime=j.serverTime;D.solUsd=j.solUsd;D.real=j.real;Object.assign(D.paper,j.paper);D.open=j.open.map(o=>({...o,ph:ph[o.mint]||[],cd:cd[o.mint]||[]}))}
+function apply(j){if(j.k==='full'){D=j}else if(j.k==='live'&&D){const ph={},cd={};D.open.forEach(o=>{ph[o.mint]=o.ph;cd[o.mint]=o.cd});const so={};D.open.forEach(o=>so[o.bot+o.mint]=o.soc);D.serverTime=j.serverTime;D.solUsd=j.solUsd;D.real=j.real;Object.assign(D.paper,j.paper);D.open=j.open.map(o=>({...o,ph:ph[o.mint]||[],cd:cd[o.mint]||[],soc:o.soc||so[o.bot+o.mint]}))}
 else if(j.k==='res'){RES.unshift(j);RES=RES.slice(0,8);showRes();return}else return;last=D.serverTime;render()}
-function showRes(){$('res').innerHTML=RES.map(r=>`<div class="${r.ok?'g':'r'}">${tm(r.t)} ${esc(r.msg)}</div>`).join('')||'<span class="mut">No commands yet</span>'}
 async function start(){const r=await fetch('https://ntfy.sh/'+TOPIC+'/json?poll=1&since=10m',{cache:'no-store'});const L=(await r.text()).trim().split('\n').filter(Boolean).map(JSON.parse);
 let fi=-1;L.forEach((m,i)=>{if(m.attachment)fi=i});const use=fi<0?L.slice(-1):L.slice(fi);
 for(const m of use){const j=await openMsg(m);if(j.k!=='res')apply(j);lastId=m.id}
@@ -130,17 +207,11 @@ const nonce=b64(crypto.getRandomValues(new Uint8Array(12)));const pt=await gzip(
 const iv=crypto.getRandomValues(new Uint8Array(12));const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:new TextEncoder().encode('cmd')},KEY,pt));
 const all=new Uint8Array(12+ct.length);all.set(iv);all.set(ct,12);RES.unshift({ok:true,msg:'sent '+action+'...',t:Date.now()/1000});showRes();
 await fetch('https://ntfy.sh/'+CTOPIC,{method:'POST',body:b64(all)})}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-close]');if(!b)return;const [bot,mint,tok,live]=b.dataset.close.split('|');
-if(confirm((live==='1'?'REAL MONEY: sell ':'Paper: close ')+tok+' on '+bot+'?'))cmd('close',{bot,mint})});
-function ctrl(){$('ctl').innerHTML=`<div class="seg"><button onclick="cmd('ping',{})">Ping box</button></div>
-<div class="seg">${['Main','LearnBot','Scalper'].map(b=>`<button onclick="confirm('Pause ${b}?')&&cmd('pause',{bot:'${b}'})">Pause ${b}</button><button onclick="cmd('resume',{bot:'${b}'})">Resume ${b}</button>`).join('')}</div>
-<div class="mut">Move paper SOL</div><div class="seg"><select id="xf" style="background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:6px"><option value="LearnBot|Scalper">LearnBot to Scalper</option><option value="Scalper|LearnBot">Scalper to LearnBot</option></select>
-<input id="xa" type="number" step="0.01" min="0" placeholder="SOL" style="width:90px;background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:6px"><button onclick="xfer()">Move</button></div>
-<div class="mut">Move real SOL: no live bots yet</div><div id="res" style="margin-top:8px;font-size:13px"></div>`;showRes()}
-function xfer(){const [from,to]=$('xf').value.split('|'),amount=+$('xa').value;if(!(amount>0))return;if(confirm('Move '+amount+' paper SOL from '+from+' to '+to+'?'))cmd('transfer_paper',{from,to,amount})}
-async function login(k){KEY=k;try{await start();$('lg').style.display='none';$('app').style.display='';ctrl();return true}catch(e){console.log(e);KEY=null;return false}}
+async function login(k){KEY=k;try{await start();$('lg').style.display='none';$('app').style.display='';ctrl();render();return true}catch(e){console.log(e);KEY=null;return false}}
 $('go').onclick=async()=>{$('msg').textContent='Checking...';const k=await derive($('pw').value);
 if(await login(k)){const raw=b64(await crypto.subtle.exportKey('raw',k));(($('rem').checked)?localStorage:sessionStorage).setItem('dk',raw);$('pw').value=''}else $('msg').textContent='Wrong password'};
+$('pw').onkeydown=e=>{if(e.key==='Enter')$('go').onclick()};
 (async()=>{const s=sessionStorage.getItem('dk')||localStorage.getItem('dk');if(s){const k=await crypto.subtle.importKey('raw',unb64(s),'AES-GCM',true,['encrypt','decrypt']);if(!await login(k)){sessionStorage.removeItem('dk');localStorage.removeItem('dk')}}})();
-$('out').onclick=()=>{sessionStorage.removeItem('dk');localStorage.removeItem('dk');location.reload()};
+$('out').onclick=e=>{e.preventDefault();sessionStorage.removeItem('dk');localStorage.removeItem('dk');location.reload()};
+
 </script></body></html>
